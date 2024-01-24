@@ -25,20 +25,24 @@ class Camera(Node):
         self.cap = cv.VideoCapture(0)
 
         # get video file
-        #self.cap = cv.VideoCapture("/video/file_example_MP4_640_3MG.mp4")
-
-        self.bridge = CvBridge()
+        # self.cap = cv.VideoCapture("./video/file_example_MP4_640_3MG.mp4")
         if not self.cap.isOpened():
             print("Cannot open camera")
             exit()
         else:
             print("Camera open success")
+
+        self.bridge = CvBridge()
+
+        self.cap.set(cv.CAP_PROP_FRAME_WIDTH, 640)
+        self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, 480)
         
     def timer_callback(self):
         ret, frame = self.cap.read()
-        
 
+        # cv.imshow("frame", frame)
         msg = self.bridge.cv2_to_imgmsg(frame, "bgr8")
+        # print(msg)
         self.publisher_.publish(msg)
         # self.get_logger().info('Publishing: "%s"' % msg.data)
     def destroy_node(self):
