@@ -69,4 +69,43 @@ export class Movement {
   }
 }
 
+export class Camera{
+  constructor(ros){
+    this.ros = ros;
+    this.ros.on("connection", () => {
+      console.log("Connected to websocket server.");
+    });
+    this.ros.on("error", (error) => {
+      console.log("Error connecting to websocket server: ", error);
+    });
+    this.ros.on("close", () => {
+      console.log("Connection to websocket server closed.");
+    });
 
+    this.camera = new ROSLIB.Topic({
+      ros: this.ros,
+      name: "/camera/raw",
+      messageType: "sensor_msgs/Image",
+    });
+    this.camera.subscribe((message) => {
+      console.log(message);
+    });
+  }
+  
+  getCameraNum(){
+    return 1;
+  }
+  subCamCapture(index, callback){
+    if(index != 0){
+      throw new Error("out of camera range");
+    }
+    this.camera.subscribe(callback);
+
+  }
+  unSubCamCapture(index){
+    this.camera.unsubscribe();
+  }
+  changeEffect(index, affection){
+    throw new Error("Not implemented");
+  }
+}
