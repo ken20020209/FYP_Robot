@@ -15,10 +15,10 @@ from sensor_msgs.msg import Image
 # print("import lib success")
 
 class Camera(Node):
-    def __init__(self):
-        super().__init__('camera')
-        self.publisher_ = self.create_publisher(Image, 'camera', 10)
-        self.timer = self.create_timer(0.5, self.timer_callback)
+    def __init__(self,name='Camera'):
+        super().__init__(name)
+        self.publisher_ = self.create_publisher(Image, 'camera/raw', 10)
+        self.timer = self.create_timer(0.05, self.timer_callback)
         self.i = 0
 
         # get camera device
