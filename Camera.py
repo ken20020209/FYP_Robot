@@ -10,15 +10,16 @@ import numpy
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, CompressedImage
 
 # print("import lib success")
 
 class Camera(Node):
     def __init__(self,name='Camera'):
         super().__init__(name)
-        self.publisher_ = self.create_publisher(Image, 'camera/raw', 10)
-        self.timer = self.create_timer(0.05, self.timer_callback)
+        # self.publisher_ = self.create_publisher(Image, 'camera/raw', 10)
+        self.publisher_ = self.create_publisher(CompressedImage, 'camera/raw', 10)
+        self.timer = self.create_timer(0.02, self.timer_callback)
         self.i = 0
 
         # get camera device
@@ -41,7 +42,9 @@ class Camera(Node):
         ret, frame = self.cap.read()
 
         # cv.imshow("frame", frame)
-        msg = self.bridge.cv2_to_imgmsg(frame, "bgr8")
+        # msg = self.bridge.cv2_to_imgmsg(frame, "bgr8")
+        msg = self.bridge.cv2_to_compressed_imgmsg(frame)
+
         # print(msg)
         self.publisher_.publish(msg)
         # self.get_logger().info('Publishing: "%s"' % msg.data)
