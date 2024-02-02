@@ -6,7 +6,7 @@ import cv2 as cv
 from cv_bridge import CvBridge
 import numpy
 
-from lib.DOGZILLALib import DOGZILLA
+from .lib.DOGZILLALib import DOGZILLA
 
 #ros2 lib
 import rclpy
