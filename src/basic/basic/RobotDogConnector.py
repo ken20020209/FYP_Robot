@@ -13,6 +13,7 @@ import numpy
 import rclpy
 from rclpy.node import Node
 from service.srv import RegisterDog,UnregisterDog
+from service.msg import DogStatus
 
 class RobotDogConnector(Node):
     
@@ -22,12 +23,26 @@ class RobotDogConnector(Node):
 
     def __init__(self,name='RobotDogConnector'):
         super().__init__(name)
-        self.name=self.get_name()
-        self.registerClient = self.create_client(RegisterDog,'dog/reg')
-        self.unregisterDogClient= self.create_client(UnregisterDog,'dog/list')
+        self.name=self.get_namespace()
+        # self.get_logger().info(self.name)
+        #create client
+        self.registerClient = self.create_client(RegisterDog,'/dog/reg')
+        self.unregisterDogClient= self.create_client(UnregisterDog,'/dog/list')
+
+        #create service
+        self.statusTopic = self.create_publisher(DogStatus,'dog/status',10)
+
+        #create timer
+        self.timer = self.create_timer(5, self.statusCallback)
 
         self.registerDog()
 
+    def statusCallback(self):
+        msg = DogStatus()
+        msg.battery = 100
+        msg.status = 1
+        self.statusTopic.publish(msg)
+    
     def startController(self):
         raise NotImplementedError
 
@@ -76,7 +91,7 @@ class RobotDogConnector(Node):
     
         else:
             self.get_logger().error('exception while calling unregisterDog service: %r' % future.exception())
-
+    
 def main(args=None):
     rclpy.init(args=args)
     robotDogConnector = RobotDogConnector()
