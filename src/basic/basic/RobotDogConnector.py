@@ -1,10 +1,12 @@
 
 #common lib
 import os
+import signal
 import sys
 import time
 import cv2 as cv
 from cv_bridge import CvBridge
+import subprocess
 import numpy
 
 
@@ -20,6 +22,7 @@ class RobotDogConnector(Node):
     name:str 
     port:int = 0
     rosDomainId:int = 0
+    controller:subprocess.Popen = None
 
     def __init__(self,name='RobotDogConnector'):
         super().__init__(name)
@@ -44,7 +47,15 @@ class RobotDogConnector(Node):
         self.statusTopic.publish(msg)
     
     def startController(self):
-        raise NotImplementedError
+        self.get_logger().info(f'start controller romain id: {self.rosDomainId}')
+        sp_env=os.environ.copy()
+        sp_env['ROS_DOMAIN_ID'] = str(self.rosDomainId)
+        self.controller = subprocess.Popen(["ros2","launch","basic","RobotDogController.launch.py"],env=sp_env)
+    def stopController(self):
+        self.get_logger().info('stop controller')
+        if self.controller is not None:
+            self.controller.send_signal(signal.SIGINT)
+            self.controller = None
 
     def registerDog(self):
         # self.get_logger().info('waiting for service')
@@ -66,8 +77,8 @@ class RobotDogConnector(Node):
             self.rosDomainId=id
             self.get_logger().info('registerDog success')
 
-            #TODO: start controller
-            # self.startController()
+            # start controller
+            self.startController()
         else:
             self.get_logger().error('exception while calling registerDog service: %r' % future.exception())
         
@@ -91,6 +102,7 @@ class RobotDogConnector(Node):
     
         else:
             self.get_logger().error('exception while calling unregisterDog service: %r' % future.exception())
+        self.stopController()
     
 def main(args=None):
     rclpy.init(args=args)
