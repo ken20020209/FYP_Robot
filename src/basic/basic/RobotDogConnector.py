@@ -14,8 +14,8 @@ import numpy
 #ros2 lib
 import rclpy
 from rclpy.node import Node
-from service.srv import RegisterDog,UnregisterDog
-from service.msg import DogStatus
+from message.srv import RegisterDog,UnregisterDog
+from message.msg import DogStatus
 
 class RobotDogConnector(Node):
     
