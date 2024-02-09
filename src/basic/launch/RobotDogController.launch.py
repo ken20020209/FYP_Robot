@@ -9,13 +9,13 @@ from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
 
 def generate_launch_description():
-    # bringup_launch_path = PathJoinSubstitution(
-    #     [FindPackageShare('bringup'), 'launch', 'Navigation.launch.py']
-    # )
+    bringup_launch_path = PathJoinSubstitution(
+        [FindPackageShare('basic'), 'launch', 'bringup.launch.py']
+    )
     return LaunchDescription([
-        # IncludeLaunchDescription(
-        #     PythonLaunchDescriptionSource(bringup_launch_path)
-        # ),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(bringup_launch_path)
+        ),
         Node(
             package='basic',
             namespace='',
