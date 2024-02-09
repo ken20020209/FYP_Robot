@@ -2,7 +2,8 @@ import rclpy   #python for ros2
 from rclpy.node import Node   #import
 from std_msgs.msg import String   #String message
 from geometry_msgs.msg import Twist
-import DOGZILLALib as dog
+# import .lib.DOGZILLALib.DOGZILLA as dog
+import lib.DOGZILLALib  as dog
 class MinimalSubscriber(Node):
     def __init__(self):
         super().__init__('cmd_vel_sub')

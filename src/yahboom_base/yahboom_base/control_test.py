@@ -1,4 +1,6 @@
-import DOGZILLALib as dog
+# import DOGZILLALib as dog
+from lib.DOGZILLALib import DOGZILLA as dog
+
 
 control = dog.DOGZILLA()
 

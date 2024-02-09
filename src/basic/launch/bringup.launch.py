@@ -50,13 +50,6 @@ def generate_launch_description():
     )
 
 
-    app_map_save_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(
-                get_package_share_directory("yahboom_app_save_map"),
-                "",
-                "yahboom_app_save_map.launch.py",
-            )),
-    )
 
     return LaunchDescription(
         [

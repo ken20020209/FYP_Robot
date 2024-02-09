@@ -3,7 +3,8 @@ import time
 from math import pi
 import rclpy
 from rclpy.node import Node
-import DOGZILLALib as dog
+# import DOGZILLALib as dog
+import lib.DOGZILLALib as dog
 from sensor_msgs.msg import Imu
 import numpy as np
 import math
