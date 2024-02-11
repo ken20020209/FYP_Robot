@@ -107,7 +107,7 @@ def generate_launch_description():
           #declare_use_rviz_cmd,
 
           start_robot_state_publisher_cmd,
-          yahboom_dog_joint_state_cmd
+          # yahboom_dog_joint_state_cmd
           #start_joint_state_publisher_cmd,
           # start_joint_state_publisher_gui_node,
           #start_rviz_cmd,
