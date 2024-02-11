@@ -10,7 +10,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     bringup_launch_path = PathJoinSubstitution(
-        [FindPackageShare('basic'), 'launch', 'bringup.launch.py']
+        [FindPackageShare('basic'), 'bringup.launch.py']
     )
     return LaunchDescription([
         IncludeLaunchDescription(
