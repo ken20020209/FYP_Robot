@@ -2,8 +2,8 @@ import serial
 import struct
 import time
 
-__version__ = '2.0.7'
-__last_modified__ = '2022/11/18'
+__version__ = '3.1.9'
+__last_modified__ = '2023/05/23'
 
 """
 ORDER 用来存放命令地址和对应数据
@@ -36,7 +36,8 @@ ORDER = {
     "IMU": [0x61, 0],
     "ROLL": [0x62, 0],
     "PITCH": [0x63, 0],
-    "YAW": [0x64, 0]
+    "YAW": [0x64, 0],
+    "IMU_RAW":[0x65, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128]
 }
 
 """
@@ -45,9 +46,9 @@ PARAM is used to store the parameter limit range of the robot dog
 """
 
 PARAM = {
-    "TRANSLATION_LIMIT": [35, 18, [75, 115]], # X Y Z 平移范围 Scope of translation
-    "ATTITUDE_LIMIT": [20, 15, 11],           # Roll Pitch Yaw 姿态范围 Scope of posture
-    "LEG_LIMIT": [35, 18, [75, 115]],         # 腿长范围 Scope of the leg
+    "TRANSLATION_LIMIT": [35, 19.5, [75, 115]], # X Y Z 平移范围 Scope of translation
+    "ATTITUDE_LIMIT": [20, 22, 16],           # Roll Pitch Yaw 姿态范围 Scope of posture
+    "LEG_LIMIT": [35, 19.5, [75, 115]],         # 腿长范围 Scope of the leg
     "MOTOR_LIMIT": [[-73, 57], [-66, 93], [-31, 31]], # 下 中 上 舵机范围 Lower, middle and upper steering gear range
     "PERIOD_LIMIT": [[1.5, 8]],
     "MARK_TIME_LIMIT": [10, 35],  # 原地踏步高度范围 Stationary height range
@@ -118,14 +119,17 @@ class DOGZILLA():
     communication interface between the upper computer and the machine dog
     """
 
-    def __init__(self, port="/dev/ttyAMA0"):
-        self.ser = serial.Serial(port, 115200, timeout=0.5)
+    def __init__(self, port="/dev/ttyAMA0", baud=115200, verbose=False):
+        self.verbose = verbose
+        self.ser = serial.Serial(port, baud, timeout=0.5)
+        self.ser.flushOutput()
+        self.ser.flushInput()
         self.rx_FLAG = 0
         self.rx_COUNT = 0
         self.rx_ADDR = 0
         self.rx_LEN = 0
         self.rx_data = bytearray(50)
-        self.__delay = 0.05
+        self.__delay = 0.01
         pass
 
     def __send(self, key, index=1, len=1):
@@ -144,6 +148,7 @@ class DOGZILLA():
         self.ser.write(tx)
 
     def __read(self, addr, read_len=1):
+        self.rx_data = bytearray(50)
         mode = 0x02
         sum_data = (0x09 + mode + addr + read_len) % 256
         sum_data = 255 - sum_data
@@ -151,6 +156,8 @@ class DOGZILLA():
         # time.sleep(0.1)
         self.ser.flushInput()
         self.ser.write(tx)
+        if self.verbose:
+            print("tx_data: ", tx)
 
     def stop(self):
         self.move_x(0)
@@ -474,12 +481,14 @@ class DOGZILLA():
         ORDER["MOTOR_SPEED"][1] = speed
         self.__send("MOTOR_SPEED")
 
+    
     def read_motor(self, out_int=False):
         """
         读取12个舵机的角度 Read the angles of the 12 steering gear
         """
         self.__read(ORDER["MOTOR_ANGLE"][0], 12)
-        time.sleep(self.__delay)
+        # time.sleep(self.__delay)
+        self.ser.read_all()
         angle = []
         if self.__unpack():
             for i in range(12):
@@ -497,7 +506,8 @@ class DOGZILLA():
 
     def read_battery(self):
         self.__read(ORDER["BATTERY"][0], 1)
-        time.sleep(self.__delay)
+        # time.sleep(self.__delay)
+        self.ser.read_all()
         battery = 0
         if self.__unpack():
             battery = int(self.rx_data[0])
@@ -505,7 +515,8 @@ class DOGZILLA():
 
     def read_version(self):
         self.__read(ORDER["FIRMWARE_VERSION"][0], 10)
-        time.sleep(self.__delay)
+        # time.sleep(self.__delay)
+        self.ser.read_all()
         firmware_version = 'Null'
         if self.__unpack():
             # data = self.rx_data[0:10]
@@ -515,7 +526,8 @@ class DOGZILLA():
 
     def read_roll(self, out_int=False):
         self.__read(ORDER["ROLL"][0], 4)
-        time.sleep(self.__delay)
+        # time.sleep(self.__delay)
+        self.ser.read_all()
         roll = 0
         if self.__unpack():
             roll = Byte2Float(self.rx_data)
@@ -526,7 +538,8 @@ class DOGZILLA():
 
     def read_pitch(self, out_int=False):
         self.__read(ORDER["PITCH"][0], 4)
-        time.sleep(self.__delay)
+        # # time.sleep(self.__delay)
+        self.ser.read_all()
         pitch = 0
         if self.__unpack():
             pitch = Byte2Float(self.rx_data)
@@ -537,7 +550,8 @@ class DOGZILLA():
 
     def read_yaw(self, out_int=False):
         self.__read(ORDER["YAW"][0], 4)
-        time.sleep(self.__delay)
+        # time.sleep(self.__delay)
+        self.ser.read_all()
         yaw = 0
         if self.__unpack():
             yaw = Byte2Float(self.rx_data)
@@ -546,76 +560,118 @@ class DOGZILLA():
             return tmp
         return round(yaw, 2)
 
-    def __unpack(self):
-        n = self.ser.inWaiting()
-        rx_CHECK = 0
-        if n:
-            data = self.ser.read(n)
-            for num in data:
-                if self.rx_FLAG == 0:
-                    if num == 0x55:
-                        self.rx_FLAG = 1
-                    else:
-                        self.rx_FLAG = 0
 
-                elif self.rx_FLAG == 1:
-                    if num == 0x00:
-                        self.rx_FLAG = 2
-                    else:
-                        self.rx_FLAG = 0
+    def __unpack_imu_raw(self):
+        '''
+        将串口缓存数据转化成IMU原始数据, 返回[accX, accY, accZ, gyroX, gyroY, gyroZ, roll, pitch, yaw]
+        Convert the serial port cache data into IMU raw data and return [accX, accY, accZ, gyroX, gyroY, gyroZ, roll, pitch, yaw]
+        '''
+        result = []
+        for i in range(9):
+            a = bytearray()
+            if i < 6:
+                a.append(self.rx_data[2*i+1])
+                a.append(self.rx_data[2*i])
+                if i < 3:
+                    result.append(struct.unpack("!h", a)[0] / 16384*9.8)
+                else:
+                    result.append(struct.unpack("!h", a)[0] / 16.4)
+            else:
+                a.append(self.rx_data[4*i - 9])
+                a.append(self.rx_data[4*i - 10])
+                a.append(self.rx_data[4*i - 11])
+                a.append(self.rx_data[4*i - 12])
+                result.append(struct.unpack("!f", a)[0] / 180*3.14)
+        return result
 
-                elif self.rx_FLAG == 2:
-                    self.rx_LEN = num
-                    self.rx_FLAG = 3
+    def read_imu_raw(self):
+        """
+        读取IMU原始数据, 返回值：[accX, accY, accZ, gyroX, gyroY, gyroZ, roll, pitch, yaw]
+        Read IMU raw data, return value: [accX, accY, accZ, gyroX, gyroY, gyroZ, roll, pitch, yaw]
+        """
+        self.__read(ORDER["IMU_RAW"][0], 24)
+        # time.sleep(self.__delay)
+        self.ser.read_all()
+        raw = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        if self.__unpack():
+            raw = self.__unpack_imu_raw()
+        return raw
 
-                elif self.rx_FLAG == 3:
-                    self.rx_TYPE = num
-                    self.rx_FLAG = 4
+    def __unpack(self, timeout=1):
+        t = time.time()
+        rx_msg = []
+        while time.time() - t < timeout:
+            n = self.ser.inWaiting()
+            rx_CHECK = 0
+            if n:
+                data = self.ser.read(n)
+                for num in data:
+                    rx_msg.append(num)
+                    if self.rx_FLAG == 0:
+                        if num == 0x55:
+                            self.rx_FLAG = 1
+                        else:
+                            self.rx_FLAG = 0
 
-                elif self.rx_FLAG == 4:
-                    self.rx_ADDR = num
-                    self.rx_FLAG = 5
+                    elif self.rx_FLAG == 1:
+                        if num == 0x00:
+                            self.rx_FLAG = 2
+                        else:
+                            self.rx_FLAG = 0
 
-                elif self.rx_FLAG == 5:
-                    if self.rx_COUNT == (self.rx_LEN - 9):
-                        self.rx_data[self.rx_COUNT] = num
+                    elif self.rx_FLAG == 2:
+                        self.rx_LEN = num
+                        self.rx_FLAG = 3
+
+                    elif self.rx_FLAG == 3:
+                        self.rx_TYPE = num
+                        self.rx_FLAG = 4
+
+                    elif self.rx_FLAG == 4:
+                        self.rx_ADDR = num
+                        self.rx_FLAG = 5
                         self.rx_COUNT = 0
-                        self.rx_FLAG = 6
-                    elif self.rx_COUNT < self.rx_LEN - 9:
-                        self.rx_data[self.rx_COUNT] = num
-                        self.rx_COUNT = self.rx_COUNT + 1
 
-                elif self.rx_FLAG == 6:
-                    for i in self.rx_data[0:(self.rx_LEN - 8)]:
-                        rx_CHECK = rx_CHECK + i
-                    rx_CHECK = 255 - (self.rx_LEN + self.rx_TYPE + self.rx_ADDR + rx_CHECK) % 256
-                    if num == rx_CHECK:
-                        self.rx_FLAG = 7
-                    else:
-                        self.rx_FLAG = 0
-                        self.rx_COUNT = 0
-                        self.rx_ADDR = 0
-                        self.rx_LEN = 0
+                    elif self.rx_FLAG == 5:
+                        if self.rx_COUNT == (self.rx_LEN - 9):
+                            self.rx_data[self.rx_COUNT] = num
+                            self.rx_FLAG = 6
+                        elif self.rx_COUNT < self.rx_LEN - 9:
+                            self.rx_data[self.rx_COUNT] = num
+                            self.rx_COUNT = self.rx_COUNT + 1
 
-                elif self.rx_FLAG == 7:
-                    if num == 0x00:
-                        self.rx_FLAG = 8
-                    else:
-                        self.rx_FLAG = 0
-                        self.rx_COUNT = 0
-                        self.rx_ADDR = 0
-                        self.rx_LEN = 0
+                    elif self.rx_FLAG == 6:
+                        for i in self.rx_data[0:(self.rx_LEN - 8)]:
+                            rx_CHECK = rx_CHECK + i
+                        rx_CHECK = 255 - (self.rx_LEN + self.rx_TYPE + self.rx_ADDR + rx_CHECK) % 256
+                        if num == rx_CHECK:
+                            self.rx_FLAG = 7
+                        else:
+                            self.rx_FLAG = 0
+                            self.rx_COUNT = 0
+                            self.rx_ADDR = 0
+                            self.rx_LEN = 0
 
-                elif self.rx_FLAG == 8:
-                    if num == 0xAA:
-                        self.rx_FLAG = 0
-                        self.rx_COUNT = 0
-                        return True
-                    else:
-                        self.rx_FLAG = 0
-                        self.rx_COUNT = 0
-                        self.rx_ADDR = 0
-                        self.rx_LEN = 0
+                    elif self.rx_FLAG == 7:
+                        if num == 0x00:
+                            self.rx_FLAG = 8
+                        else:
+                            self.rx_FLAG = 0
+                            self.rx_COUNT = 0
+                            self.rx_ADDR = 0
+                            self.rx_LEN = 0
+
+                    elif self.rx_FLAG == 8:
+                        if num == 0xAA:
+                            self.rx_FLAG = 0
+                            if self.verbose:
+                                print("rx_data: ", rx_msg)
+                            return True
+                        else:
+                            self.rx_FLAG = 0
+                            self.rx_COUNT = 0
+                            self.rx_ADDR = 0
+                            self.rx_LEN = 0
         return False
 
     def calibration(self, state):
@@ -633,3 +689,8 @@ if __name__ == '__main__':
     g_dog = DOGZILLA()
     version = g_dog.read_version()
     print("version:", version)
+
+    while True:
+        time.sleep(.5)
+        imu_raw = g_dog.read_imu_raw()
+        print("imu_raw:", imu_raw, "\n")
