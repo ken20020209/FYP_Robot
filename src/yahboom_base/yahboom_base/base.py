@@ -3,7 +3,7 @@ from rclpy.node import Node   #import
 from std_msgs.msg import String   #String message
 from geometry_msgs.msg import Twist
 # import .lib.DOGZILLALib.DOGZILLA as dog
-import lib.DOGZILLALib  as dog
+from .lib import DOGZILLALib as dog
 class MinimalSubscriber(Node):
     def __init__(self):
         super().__init__('cmd_vel_sub')
