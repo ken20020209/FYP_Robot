@@ -74,11 +74,11 @@ def generate_launch_description():
   #   executable='joint_state_publisher',
   #   name='joint_state_publisher')
 
-  yahboom_dog_joint_state_cmd = Node(
-            package="yahboom_dog_joint_state",
-            executable="yahboomcar_joint_state",
-            name="yahboom_dog_joint_state_publisher",
-            output="screen")
+  # yahboom_dog_joint_state_cmd = Node(
+  #           package="yahboom_dog_joint_state",
+  #           executable="yahboomcar_joint_state",
+  #           name="yahboom_dog_joint_state_publisher",
+  #           output="screen")
 
   # A GUI to manipulate the joint state values
   #机器人关节状态发布节点 带gui 
@@ -107,7 +107,7 @@ def generate_launch_description():
           #declare_use_rviz_cmd,
 
           start_robot_state_publisher_cmd,
-          yahboom_dog_joint_state_cmd
+          # yahboom_dog_joint_state_cmd
           #start_joint_state_publisher_cmd,
           # start_joint_state_publisher_gui_node,
           #start_rviz_cmd,

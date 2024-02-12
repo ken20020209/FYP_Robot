@@ -43,11 +43,11 @@ def generate_launch_description():
             )),
         )
 
-    tf_basefootprint = Node(
-        package='tf_publisher',
-        node_executable="tf_publisher",
-        output="screen"
-    )
+    # tf_basefootprint = Node(
+    #     package='tf_publisher',
+    #     node_executable="tf_publisher",
+    #     output="screen"
+    # )
 
 
 
@@ -57,6 +57,6 @@ def generate_launch_description():
             yahboom_dog_joint_state,
             xgo_description,
             yahboom_base,
-            tf_basefootprint
+            # tf_basefootprint
         ]
     )
