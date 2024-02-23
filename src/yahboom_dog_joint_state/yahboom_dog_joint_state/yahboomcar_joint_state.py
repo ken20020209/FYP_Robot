@@ -59,9 +59,11 @@ class MinimalPublisher(Node):
         try:
            self.oled.ros_main()
         except Exception:
-            del self.oled
+            self.oled.clear(True)
             print("---Program closed!---")
-
+    def destroy_node(self) -> np.bool:
+        del self.oled
+        return super().destroy_node()
     def timer_callback(self):
         try:
             
