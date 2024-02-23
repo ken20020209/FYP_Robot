@@ -59,7 +59,7 @@ class MinimalPublisher(Node):
         try:
            self.oled.ros_main()
         except Exception:
-            del oled
+            del self.oled
             print("---Program closed!---")
 
     def timer_callback(self):
