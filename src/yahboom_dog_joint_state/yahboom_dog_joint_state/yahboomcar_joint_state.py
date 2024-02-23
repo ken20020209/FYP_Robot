@@ -57,13 +57,7 @@ class MinimalPublisher(Node):
 
     def oled_callback(self):
         try:
-            while True:
-                state = self.oled.main_program()
-                self.oled.clear(True)
-                if state:
-                    del self.oled
-                    print("---OLED CLEARED!---")
-                    break
+           self.oled.ros_main()
         except Exception:
             del oled
             print("---Program closed!---")

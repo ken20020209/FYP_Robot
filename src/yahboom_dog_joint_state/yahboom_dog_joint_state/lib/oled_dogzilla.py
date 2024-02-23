@@ -259,7 +259,31 @@ class Dogzilla_OLED:
             if self.__debug:
                 print("!!!---OLED refresh error---!!!")
             return False
-
+    def ros_main(self):
+        state = self.begin()
+        if state:
+            self.clear()
+            if self.__clear:
+                self.refresh()
+                return True
+            str_CPU = self.getCPULoadRate(cpu_index)
+            str_Time = self.getSystemTime()
+            if cpu_index == 0:
+                str_FreeRAM = self.getUsagedRAM()
+                str_Disk = self.getUsagedDisk()
+                str_IP = "IPA:" + self.getLocalIP()
+            self.add_text(0, 0, str_CPU)
+            self.add_text(50, 0, str_Time)
+            self.setBatteryShow()
+            self.add_line(str_FreeRAM, 2)
+            # self.add_line(str_Disk, 3)
+            self.add_line("NAME:Dog2",3)
+            self.add_line(str_IP, 4)
+            # Display image.
+            self.refresh()
+            cpu_index = cpu_index + 1
+            if cpu_index >= 5:
+                cpu_index = 0
 
 def main(g_dog=None, clear=False, debug=False):
     try:
