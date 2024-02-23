@@ -40,7 +40,7 @@ class MinimalPublisher(Node):
     def __init__(self):
         super().__init__('yahboomcar_joint_state')
         self.dogControl = dog.DOGZILLA()
-        self.oled = Dogzilla_OLED()
+        self.oled = Dogzilla_OLED(self.dogControl)
         self.oledTime=0
         self.imu_msg = Imu()
         self.imu_msg.header.frame_id = 'imu_link'
