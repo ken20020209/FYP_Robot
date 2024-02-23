@@ -9,6 +9,7 @@ from .lib import DOGZILLALib as dog
 from sensor_msgs.msg import Imu
 import numpy as np
 import math
+from .lib.oled_dogzilla import Dogzilla_OLED
 
 
 
@@ -41,16 +42,31 @@ class MinimalPublisher(Node):
         self.dogControl = dog.DOGZILLA()
         self.imu_msg = Imu()
         self.imu_msg.header.frame_id = 'imu_link'
+        self.oled= Dogzilla_OLED(self.dogControl)
 
         self.publisher_ = self.create_publisher(JointState, 'joint_states', 5)
         self.imu_pub = self.create_publisher(Imu, 'imu/data_raw_self', 10)
 
         self.timer_period = 0.05  # seconds
         self.timer = self.create_timer(self.timer_period, self.timer_callback)
+        self.oled_timer = self.create_timer(1, self.oled_callback)
         self.i = 0
         self.last_state = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.last_imu = []
         self.last_time = time.time()
+
+    def oled_callback(self):
+        try:
+            while True:
+                state = self.oled.main_program()
+                self.oled.clear(True)
+                if state:
+                    del self.oled
+                    print("---OLED CLEARED!---")
+                    break
+        except Exception:
+            del oled
+            print("---Program closed!---")
 
     def timer_callback(self):
         try:
