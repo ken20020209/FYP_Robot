@@ -9,7 +9,6 @@ from .lib import DOGZILLALib as dog
 from sensor_msgs.msg import Imu
 import numpy as np
 import math
-from .lib.oled_dogzilla import Dogzilla_OLED
 
 
 
@@ -40,8 +39,6 @@ class MinimalPublisher(Node):
     def __init__(self):
         super().__init__('yahboomcar_joint_state')
         self.dogControl = dog.DOGZILLA()
-        self.oled = Dogzilla_OLED(self.dogControl)
-        self.oledTime=0
         self.imu_msg = Imu()
         self.imu_msg.header.frame_id = 'imu_link'
 
@@ -50,20 +47,14 @@ class MinimalPublisher(Node):
 
         self.timer_period = 0.05  # seconds
         self.timer = self.create_timer(self.timer_period, self.timer_callback)
-        self.oled_timer = self.create_timer(1, self.oled_callback)
         self.i = 0
         self.last_state = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.last_imu = []
         self.last_time = time.time()
 
-    def oled_callback(self):
-        if(self.oledTime%40==0):
-            self.oled.ros_main()
-        self.oledTime = self.oledTime + 1
-        
     def timer_callback(self):
-        self.oled_callback()
         try:
+            
             msg = JointState()
             t = self.get_clock().now()
             msg.header.stamp = t.to_msg()
