@@ -42,7 +42,7 @@ class MinimalPublisher(Node):
         self.dogControl = dog.DOGZILLA()
         self.imu_msg = Imu()
         self.imu_msg.header.frame_id = 'imu_link'
-        self.oled= Dogzilla_OLED(self.dogControl)
+        self.oled= Dogzilla_OLED(self.dogControl,True)
 
         self.publisher_ = self.create_publisher(JointState, 'joint_states', 5)
         self.imu_pub = self.create_publisher(Imu, 'imu/data_raw_self', 10)

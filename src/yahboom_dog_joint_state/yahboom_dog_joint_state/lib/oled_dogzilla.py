@@ -245,7 +245,8 @@ class Dogzilla_OLED:
                 self.add_text(50, 0, str_Time)
                 self.setBatteryShow()
                 self.add_line(str_FreeRAM, 2)
-                self.add_line(str_Disk, 3)
+                # self.add_line(str_Disk, 3)
+                self.add_line("NAME:Dog2",3)
                 self.add_line(str_IP, 4)
                 # Display image.
                 self.refresh()
@@ -260,7 +261,7 @@ class Dogzilla_OLED:
             return False
 
 
-def main(g_dog=None):
+def main(g_dog=None, clear=False, debug=False):
     try:
         #g_dog = DOGZILLA()
         #g_dog = None
