@@ -42,7 +42,7 @@ class MinimalPublisher(Node):
         self.imu_msg = Imu()
         self.imu_msg.header.frame_id = 'imu_link'
 
-        self.publisher_ = self.create_publisher(JointState, '/joint_states', 5)
+        self.publisher_ = self.create_publisher(JointState, 'joint_states', 5)
         self.imu_pub = self.create_publisher(Imu, 'imu/data_raw_self', 10)
 
         self.timer_period = 0.05  # seconds
