@@ -18,7 +18,7 @@ def generate_launch_description():
             'namespace',
             default_value=namespace,
             description='Name of the RobotDogConnector node'
-        ),
+        )
     
 
     group = GroupAction([
@@ -33,7 +33,7 @@ def generate_launch_description():
         Node(
             package='basic',
             executable='Action'
-        ),
+        )
     ])
 
     ld = LaunchDescription()
