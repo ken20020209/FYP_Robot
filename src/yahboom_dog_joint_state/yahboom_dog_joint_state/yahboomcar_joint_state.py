@@ -132,6 +132,9 @@ class MinimalPublisher(Node):
         except IndexError:
             self.get_logger().error(f'获取舵机状态失败', throttle_duration_sec=1)
             pass
+        except Exception as e:
+            self.get_logger().error(f'获取舵机状态失败: {e}', throttle_duration_sec=1)
+            pass
 
     
     def compute_orientation(self, wx, wy, wz, ax, ay, az, dt):
