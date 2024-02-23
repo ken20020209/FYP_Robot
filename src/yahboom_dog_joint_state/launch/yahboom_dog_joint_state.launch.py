@@ -18,7 +18,7 @@ def generate_launch_description():
             executable="yahboomcar_joint_state",
             name="yahboom_dog_joint_state_publisher",
             output="screen",
-            remappings=[('/imu/data_raw_self', 'imu/data')])
+            remappings=[('imu/data_raw_self', 'imu/data')])
 
     return LaunchDescription([
         yahboom_dog_joint_state_cmd,
