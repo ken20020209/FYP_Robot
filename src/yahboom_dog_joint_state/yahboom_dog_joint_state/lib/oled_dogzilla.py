@@ -271,16 +271,16 @@ class Dogzilla_OLED:
             str_CPU = self.getCPULoadRate(self.cpu_index)
             str_Time = self.getSystemTime()
             if self.cpu_index == 0:
-                str_FreeRAM = self.getUsagedRAM()
-                str_Disk = self.getUsagedDisk()
-                str_IP = "IPA:" + self.getLocalIP()
+                self.str_FreeRAM = self.getUsagedRAM()
+                self.str_Disk = self.getUsagedDisk()
+                self.str_IP = "IPA:" + self.getLocalIP()
             self.add_text(0, 0, str_CPU)
             self.add_text(50, 0, str_Time)
             self.setBatteryShow()
-            self.add_line(str_FreeRAM, 2)
+            self.add_line(self.str_FreeRAM, 2)
             # self.add_line(str_Disk, 3)
             self.add_line("NAME:Dog2",3)
-            self.add_line(str_IP, 4)
+            self.add_line(self.str_IP, 4)
             # Display image.
             self.refresh()
             self.cpu_index = self.cpu_index + 1
