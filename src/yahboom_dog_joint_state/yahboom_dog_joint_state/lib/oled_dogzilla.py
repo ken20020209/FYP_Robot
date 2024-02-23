@@ -261,6 +261,7 @@ class Dogzilla_OLED:
             return False
     def ros_main(self):
         state = self.begin()
+        cpu_index = 0
         if state:
             self.clear()
             if self.__clear:
