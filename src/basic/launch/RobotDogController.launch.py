@@ -13,7 +13,7 @@ def generate_launch_description():
         [FindPackageShare('basic'), 'bringup.launch.py']
     )
 
-    namespace=LaunchConfiguration('namespace','RobotDogConnector')
+    namespace=LaunchConfiguration('namespace',default='RobotDogConnector')
     namespace_declare=DeclareLaunchArgument(
             'namespace',
             default_value=namespace,
