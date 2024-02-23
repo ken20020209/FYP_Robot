@@ -40,9 +40,10 @@ class MinimalPublisher(Node):
     def __init__(self):
         super().__init__('yahboomcar_joint_state')
         self.dogControl = dog.DOGZILLA()
+        self.oled = Dogzilla_OLED()
+        self.oledTime=0
         self.imu_msg = Imu()
         self.imu_msg.header.frame_id = 'imu_link'
-        self.oled= Dogzilla_OLED(self.dogControl)
 
         self.publisher_ = self.create_publisher(JointState, 'joint_states', 5)
         self.imu_pub = self.create_publisher(Imu, 'imu/data_raw_self', 10)
@@ -56,17 +57,13 @@ class MinimalPublisher(Node):
         self.last_time = time.time()
 
     def oled_callback(self):
-        try:
-           self.oled.ros_main()
-        except Exception:
-            self.oled.clear(True)
-            print("---Program closed!---")
-    def destroy_node(self) -> np.bool:
-        del self.oled
-        return super().destroy_node()
+        if(self.oledTime%3==0):
+            self.oled.ros_main()
+        self.oledTime = self.oledTime + 0.05
+        
     def timer_callback(self):
+        self.oled_callback()
         try:
-            
             msg = JointState()
             t = self.get_clock().now()
             msg.header.stamp = t.to_msg()
