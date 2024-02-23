@@ -57,9 +57,9 @@ class MinimalPublisher(Node):
         self.last_time = time.time()
 
     def oled_callback(self):
-        if(self.oledTime%3==0):
+        if(self.oledTime%40==0):
             self.oled.ros_main()
-        self.oledTime = self.oledTime + 0.05
+        self.oledTime = self.oledTime + 1
         
     def timer_callback(self):
         self.oled_callback()
