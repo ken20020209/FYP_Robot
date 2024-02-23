@@ -35,7 +35,7 @@ def generate_launch_description():
       output='screen',
       parameters=[
         {'device_model': 'MS200'},
-        {'frame_id': 'laser_frame'},
+        {'frame_id': PythonExpression(["'",namespace,"'+","'/laser_frame'"])},
         {'scan_topic': 'scan'},
         {'port_name': '/dev/ttyAMA1'},
         {'baudrate': 230400},
