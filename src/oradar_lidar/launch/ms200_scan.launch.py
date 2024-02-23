@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from launch.substitutions import Command, LaunchConfiguration, PythonExpression
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription
 
 '''
 parameters=[
@@ -19,6 +21,12 @@ parameters=[
 '''
 
 def generate_launch_description():
+  namespace=LaunchConfiguration('namespace',default='RobotDogConnector')
+  namespace_declare=DeclareLaunchArgument(
+            'namespace',
+            default_value=namespace,
+            description='Name of the RobotDogConnector node'
+        )
   # LiDAR publisher node
   ordlidar_node = Node(
       package='oradar_lidar',
@@ -45,13 +53,14 @@ def generate_launch_description():
     package='tf2_ros',
     node_executable='static_transform_publisher',
     node_name='base_link_to_base_laser',
-    arguments=['0','0','0.18','0','0','0','base_link','laser_frame']
+    arguments=['0','0','0.18','0','0','0',PythonExpression(["'",namespace,"'+","'/base_link'"]),PythonExpression(["'",namespace,"'+","'/laser_frame'"])]
   )
 
 
   # Define LaunchDescription variable
   ord = LaunchDescription()
 
+  ord.add_action(namespace_declare)
   ord.add_action(ordlidar_node)
   ord.add_action(base_link_to_laser_tf_node)
 

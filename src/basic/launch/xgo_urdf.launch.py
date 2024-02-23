@@ -37,6 +37,12 @@ def generate_launch_description():
   #   default_value=default_rviz_config_path,
   #   description='Full path to the RVIZ config file to use')
   
+  namespace=LaunchConfiguration('namespace',default='RobotDogConnector')
+  namespace_declare=DeclareLaunchArgument(
+            'namespace',
+            default_value=namespace,
+            description='Name of the RobotDogConnector node'
+        )
 
   declare_xacro_model_path_cmd = DeclareLaunchArgument(
     name='xacro_model', 
@@ -63,7 +69,8 @@ def generate_launch_description():
             executable="robot_state_publisher",
             name="robot_state_publisher",
             parameters=[
-                {"robot_description": robot_desc}],
+                {"robot_description": robot_desc},
+                {"frame_prefix": PythonExpression(["'",namespace,"'+","'/'"])}],
             output="screen",)
             
   # Publish the joint state values for the non-fixed joints in the URDF file.
@@ -103,6 +110,7 @@ def generate_launch_description():
           # declare_use_joint_state_publisher_cmd,
           #declare_rviz_config_file_cmd,
           declare_xacro_model_path_cmd,
+          namespace_declare,
           #declare_use_robot_state_pub_cmd,
           #declare_use_rviz_cmd,
 
