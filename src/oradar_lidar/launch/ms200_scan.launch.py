@@ -28,7 +28,7 @@ def generate_launch_description():
       parameters=[
         {'device_model': 'MS200'},
         {'frame_id': 'laser_frame'},
-        {'scan_topic': '/scan'},
+        {'scan_topic': 'scan'},
         {'port_name': '/dev/ttyAMA1'},
         {'baudrate': 230400},
         {'angle_min': 0.0},

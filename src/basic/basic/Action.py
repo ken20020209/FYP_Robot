@@ -20,7 +20,7 @@ from std_msgs.msg import Int32;
 class Action(Node):
     def __init__(self,name='Action'):
         super().__init__(name)
-        self.subAction= self.create_subscription(Int32,'/action',self.action_callback,10)
+        self.subAction= self.create_subscription(Int32,'action',self.action_callback,10)
         self.dog=DOGZILLA()
         
     def action_callback(self,msg):
