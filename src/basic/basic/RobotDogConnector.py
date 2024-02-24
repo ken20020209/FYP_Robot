@@ -16,6 +16,8 @@ import rclpy
 from rclpy.node import Node
 from message.srv import RegisterDog,UnregisterDog
 from message.msg import DogStatus
+from std_msgs.msg import Int32
+from .lib.DOGZILLALib import DOGZILLA
 
 class RobotDogConnector(Node):
     
@@ -27,6 +29,9 @@ class RobotDogConnector(Node):
     def __init__(self,name='RobotDogConnector'):
         super().__init__(name)
         self.name=self.get_namespace()
+        self.g_dogzilla = DOGZILLA()
+        self.serverLife=11
+
         # self.get_logger().info(self.name)
         #create client
         self.registerClient = self.create_client(RegisterDog,'/dog/reg')
@@ -35,16 +40,27 @@ class RobotDogConnector(Node):
         #create service
         self.statusTopic = self.create_publisher(DogStatus,'dog/status',10)
 
+        #create subscription
+        self.subscription = self.create_subscription(Int32,'/server/status',self.serverStatusCallback ,10)
+
         #create timer
         self.timer = self.create_timer(5, self.statusCallback)
 
         self.registerDog()
 
+    def serverStatusCallback(self,msg):
+        self.serverLife+=5
     def statusCallback(self):
         msg = DogStatus()
         msg.battery = 100
         msg.status = 1
         self.statusTopic.publish(msg)
+
+        self.serverLife-=5
+        if self.serverLife<=0:
+            self.g_dogzilla.reset()
+            self.unregisterDog()
+            self.registerDog()
     
     def startController(self):
         self.get_logger().info(f'start controller romain id: {self.rosDomainId}')
