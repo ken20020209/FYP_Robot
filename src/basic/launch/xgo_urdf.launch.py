@@ -37,7 +37,7 @@ def generate_launch_description():
   #   default_value=default_rviz_config_path,
   #   description='Full path to the RVIZ config file to use')
   
-  namespace=LaunchConfiguration('namespace',default='RobotDogConnector')
+  namespace=LaunchConfiguration('namespace',default='')
   namespace_declare=DeclareLaunchArgument(
             'namespace',
             default_value=namespace,

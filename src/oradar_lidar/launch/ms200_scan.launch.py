@@ -21,7 +21,7 @@ parameters=[
 '''
 
 def generate_launch_description():
-  namespace=LaunchConfiguration('namespace',default='RobotDogConnector')
+  namespace=LaunchConfiguration('namespace',default='')
   namespace_declare=DeclareLaunchArgument(
             'namespace',
             default_value=namespace,
