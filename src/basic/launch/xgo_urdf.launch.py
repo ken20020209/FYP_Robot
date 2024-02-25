@@ -70,7 +70,7 @@ def generate_launch_description():
             name="robot_state_publisher",
             parameters=[
                 {"robot_description": robot_desc},
-                {"frame_prefix": PythonExpression(["'",namespace,"'"])}],
+                {"frame_prefix": PythonExpression(["'",namespace,"'+","'/'"])}],
             output="screen",)
             
   # Publish the joint state values for the non-fixed joints in the URDF file.
