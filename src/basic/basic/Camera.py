@@ -22,6 +22,7 @@ class Camera(Node):
         self.publisher_ = self.create_publisher(CompressedImage, 'camera/raw', 10)
         self.timer = self.create_timer(0.02, self.timer_callback)
         self.i = 0
+        self.enable=True
 
         # get camera device
         self.cap = cv.VideoCapture(0)
@@ -40,11 +41,10 @@ class Camera(Node):
         self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, 480)
     
     def enable_callback(self, msg):
-        if msg.data:
-            self.timer.reset()
-        else:
-            self.timer.cancel()
+        self.enable=msg.data
     def timer_callback(self):
+        if not self.enable:
+            return
         ret, frame = self.cap.read()
 
         # cv.imshow("frame", frame)
