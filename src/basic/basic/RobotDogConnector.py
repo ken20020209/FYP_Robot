@@ -30,7 +30,7 @@ class RobotDogConnector(Node):
         super().__init__(name)
         self.name=self.get_namespace()
         self.g_dogzilla = DOGZILLA()
-        self.serverLife=11
+        self.serverLife=5
 
         # self.get_logger().info(self.name)
         #create client
@@ -44,19 +44,19 @@ class RobotDogConnector(Node):
         self.subscription = self.create_subscription(Int32,'/server/status',self.serverStatusCallback ,10)
 
         #create timer
-        self.timer = self.create_timer(5, self.statusCallback)
+        self.timer = self.create_timer(1, self.statusCallback)
 
         self.registerDog()
 
     def serverStatusCallback(self,msg):
-        self.serverLife+=5
+        self.serverLife=5
     def statusCallback(self):
         msg = DogStatus()
         msg.battery = 100
         msg.status = 1
         self.statusTopic.publish(msg)
 
-        self.serverLife-=5
+        self.serverLife-=1
         if self.serverLife<=0:
             self.g_dogzilla.reset()
             self.unregisterDog()
