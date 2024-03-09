@@ -7,7 +7,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         DeclareLaunchArgument(
-            'tpye',
+            'type',
             default_value='dog_s2',
             description='Type of the Robot'
         ),
@@ -19,6 +19,9 @@ def generate_launch_description():
         Node(
             package='basic',
             namespace=LaunchConfiguration('name'),
-            executable='RobotDogConnector'
+            executable='RobotDogConnector',
+            parameters=[{'type': LaunchConfiguration('type')},
+                        {'name': LaunchConfiguration('name')},]
+
         )
     ])

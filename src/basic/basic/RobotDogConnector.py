@@ -32,6 +32,7 @@ class RobotDogConnector(Node):
         self.g_dogzilla = DOGZILLA()
         self.serverLife=5
 
+        self.declare_parameter('type','dog_s2')
         # self.get_logger().info(self.name)
         #create client
         self.registerClient = self.create_client(RegisterDog,'/dog/reg')
@@ -80,7 +81,7 @@ class RobotDogConnector(Node):
         self.get_logger().info('service available')
         request = RegisterDog.Request()
         request.dog_id = self.name
-        request.type= self.get_parameter('type').value
+        request.type= self.get_parameter('type')
         
         future = self.registerClient.call_async(request)
         rclpy.spin_until_future_complete(self, future)
