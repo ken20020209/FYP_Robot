@@ -7,6 +7,11 @@ def generate_launch_description():
 
     return LaunchDescription([
         DeclareLaunchArgument(
+            'tpye',
+            default_value='dog_s2',
+            description='Type of the Robot'
+        ),
+        DeclareLaunchArgument(
             'name',
             default_value='RobotDogConnector',
             description='Name of the RobotDogConnector node'

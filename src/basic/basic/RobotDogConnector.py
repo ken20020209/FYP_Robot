@@ -80,6 +80,7 @@ class RobotDogConnector(Node):
         self.get_logger().info('service available')
         request = RegisterDog.Request()
         request.dog_id = self.name
+        request.type= self.get_parameter('type').value
         
         future = self.registerClient.call_async(request)
         rclpy.spin_until_future_complete(self, future)
