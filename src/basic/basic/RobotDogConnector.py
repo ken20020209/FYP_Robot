@@ -38,6 +38,9 @@ class RobotDogConnector(Node):
         self.registerClient = self.create_client(RegisterDog,'/dog/reg')
         self.unregisterDogClient= self.create_client(UnregisterDog,'/dog/list')
 
+        #oled
+        self.oled = subprocess.Popen(["python3","./lib/oled_dogzilla.py"])
+
         #create service
         self.statusTopic = self.create_publisher(DogStatus,'dog/status',10)
 
