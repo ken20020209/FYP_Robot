@@ -13,7 +13,7 @@ from multiprocessing import Process,Manager,Value
 print(os.path.dirname(os.path.abspath(__file__)))
 
 # get name for env file
-name = ""
+name = "dog_s2_0"
 with open(f"{os.path.dirname(os.path.abspath(__file__))}/env") as f:
     name = f.readline()
     name = name.split(":")[1]
