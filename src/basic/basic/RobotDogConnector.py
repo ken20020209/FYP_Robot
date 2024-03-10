@@ -94,21 +94,24 @@ class RobotDogConnector(Node):
         request.type= str(self.get_parameter('type').value)
         
         future = self.registerClient.call_async(request)
-        rclpy.spin_until_future_complete(self, future)
-        # if future.done():
-        if future.result() is not None:
-            self.get_logger().info('result of registerDog domain id: %s' % future.result().id)
-            id=future.result().id
-            if id ==-1:
-                self.get_logger().info('registerDog failed')
-                return
-            self.rosDomainId=id
-            self.get_logger().info('registerDog success')
+        # rclpy.spin_until_future_complete(self, future)
+        
+        def callback(future):
+            # if future.done():
+            if future.result() is not None:
+                self.get_logger().info('result of registerDog domain id: %s' % future.result().id)
+                id=future.result().id
+                if id ==-1:
+                    self.get_logger().info('registerDog failed')
+                    return
+                self.rosDomainId=id
+                self.get_logger().info('registerDog success')
 
-            # start controller
-            self.startController()
-        else:
-            self.get_logger().error('exception while calling registerDog service: %r' % future.exception())
+                # start controller
+                self.startController()
+            else:
+                self.get_logger().error('exception while calling registerDog service: %r' % future.exception())
+        future.add_done_callback(callback)
         
 
 
