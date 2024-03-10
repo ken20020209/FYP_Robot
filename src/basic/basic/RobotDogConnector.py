@@ -55,6 +55,9 @@ class RobotDogConnector(Node):
         
 
     def serverStatusCallback(self,msg):
+        if msg.data==-1:
+            self.serverLife=-1
+            return
         self.serverLife=5
     def statusCallback(self):
         msg = DogStatus()
