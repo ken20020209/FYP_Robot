@@ -18,6 +18,10 @@ def generate_launch_description():
         ),
         Node(
             package='basic',
+            executable='Oled',
+        ),
+        Node(
+            package='basic',
             namespace=LaunchConfiguration('name'),
             executable='RobotDogConnector',
             parameters=[{'type': LaunchConfiguration('type')},

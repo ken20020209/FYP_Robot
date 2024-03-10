@@ -29,6 +29,7 @@ setup(
         'RobotDogConnector = basic.RobotDogConnector:main',
         'Camera = basic.Camera:main',
         'Action= basic.Action:main',
+        'Oled= basic.Oled:main',
         ],
     },
 )

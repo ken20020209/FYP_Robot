@@ -264,8 +264,7 @@ class Dogzilla_OLED:
                 print("!!!---OLED refresh error---!!!")
             return False
 
-
-if __name__ == "__main__":
+def main():
     try:
         g_dog = DOGZILLA()
         g_dog = None
@@ -295,3 +294,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         del oled
         print("---Program closed!---")
+    
+if __name__ == "__main__":
+    main()
