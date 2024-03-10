@@ -22,7 +22,7 @@ class Camera(Node):
         self.publisher_ = self.create_publisher(CompressedImage, 'camera/raw', 10)
         self.timer = self.create_timer(0.02, self.timer_callback)
         self.i = 0
-        self.enable=True
+        self.enable=False
 
         # get camera device
         self.cap = cv.VideoCapture(0)
