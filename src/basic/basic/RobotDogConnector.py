@@ -66,6 +66,7 @@ class RobotDogConnector(Node):
         if self.serverLife<=0:
             self.g_dogzilla.reset()
             self.get_logger().info('server dead')
+            self.stopController()
             # self.unregisterDog()
             self.registerDog()
     
