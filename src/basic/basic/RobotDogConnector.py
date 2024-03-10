@@ -64,6 +64,7 @@ class RobotDogConnector(Node):
         if self.serverLife<=0:
             self.g_dogzilla.reset()
             self.unregisterDog()
+            self.registerClient = self.create_client(RegisterDog,'/dog/reg')
             self.registerDog()
     
     def startController(self):
