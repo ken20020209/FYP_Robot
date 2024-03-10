@@ -14,6 +14,6 @@ print(os.path.dirname(os.path.abspath(__file__)))
 
 # print(os.path.dirname(os.path.abspath(__file__)))
 
-
-
+os.system(f" sudo systemctl stop yahboom_oled.service")
+os.system(f"sudo systemctl stop YahboomStart.service")
 os.system(f"/bin/bash -c 'source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash && ros2 launch basic RobotDogConnector.launch.py name:=dog_s2_1 tpye:=dog_s2'")
