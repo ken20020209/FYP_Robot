@@ -12,8 +12,13 @@ from multiprocessing import Process,Manager,Value
 #output my current file directory not pwd path
 print(os.path.dirname(os.path.abspath(__file__)))
 
+# get name for env file
+name = ""
+with open(f"{os.path.dirname(os.path.abspath(__file__))}/env") as f:
+    name = f.readline()
+    name = name.split(":")[1]
 # print(os.path.dirname(os.path.abspath(__file__)))
 
 os.system(f" sudo systemctl stop yahboom_oled.service")
 os.system(f"sudo systemctl stop YahboomStart.service")
-os.system(f"/bin/bash -c 'source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash && ros2 launch basic RobotDogConnector.launch.py name:=dog_s2_1 tpye:=dog_s2'")
+os.system(f"/bin/bash -c 'source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash && ros2 launch basic RobotDogConnector.launch.py name:={name} tpye:=dog_s2'")
