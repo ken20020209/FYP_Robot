@@ -36,7 +36,7 @@ class RobotDogConnector(Node):
         # self.get_logger().info(self.name)
         #create client
         self.registerClient = self.create_client(RegisterDog,'/dog/reg')
-        self.unregisterDogClient= self.create_client(UnregisterDog,'/dog/list')
+        # self.unregisterDogClient= self.create_client(UnregisterDog,'/dog/list')
 
         #oled
         # self.oled = subprocess.Popen(["python3","./lib/oled_dogzilla.py"])
@@ -66,7 +66,7 @@ class RobotDogConnector(Node):
         if self.serverLife<=0:
             self.g_dogzilla.reset()
             self.get_logger().info('server dead')
-            self.unregisterDog()
+            # self.unregisterDog()
             self.registerDog()
     
     def startController(self):
@@ -84,7 +84,7 @@ class RobotDogConnector(Node):
         # self.get_logger().info('waiting for service')
         count = 0
         while not self.registerClient.wait_for_service(timeout_sec=1.0):
-            self.get_logger().info(f'{count}service not available, waiting again...')
+            self.get_logger().info(f'({count}): service not available, waiting again...')
             count+=1
         self.get_logger().info('service available')
         request = RegisterDog.Request()
