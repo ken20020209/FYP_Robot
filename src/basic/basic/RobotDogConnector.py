@@ -81,6 +81,7 @@ class RobotDogConnector(Node):
             self.controller = None
 
     def registerDog(self):
+        self.serverLife=5
         # self.get_logger().info('waiting for service')
         count = 0
         while not self.registerClient.wait_for_service(timeout_sec=1.0):
@@ -92,8 +93,7 @@ class RobotDogConnector(Node):
         request.type= str(self.get_parameter('type').value)
         
         future = self.registerClient.call_async(request)
-        while not rclpy.spin_until_future_complete(self, future,timeout_sec=1.0):
-            self.get_logger().info('registerDog service call failed')
+        rclpy.spin_until_future_complete(self, future)
         # if future.done():
         if future.result() is not None:
             self.get_logger().info('result of registerDog domain id: %s' % future.result().id)
