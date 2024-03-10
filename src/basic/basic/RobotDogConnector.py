@@ -47,10 +47,12 @@ class RobotDogConnector(Node):
         #create subscription
         self.subscription = self.create_subscription(Int32,'/server/status',self.serverStatusCallback ,10)
 
+        self.registerDog()
+
         #create timer
         self.timer = self.create_timer(1, self.statusCallback)
 
-        self.registerDog()
+        
 
     def serverStatusCallback(self,msg):
         self.serverLife=5
@@ -63,8 +65,8 @@ class RobotDogConnector(Node):
         self.serverLife-=1
         if self.serverLife<=0:
             self.g_dogzilla.reset()
+            self.get_logger().info('server dead')
             self.unregisterDog()
-            self.registerClient = self.create_client(RegisterDog,'/dog/reg')
             self.registerDog()
     
     def startController(self):
@@ -80,8 +82,10 @@ class RobotDogConnector(Node):
 
     def registerDog(self):
         # self.get_logger().info('waiting for service')
+        count = 0
         while not self.registerClient.wait_for_service(timeout_sec=1.0):
-            self.get_logger().info('service not available, waiting again...')
+            self.get_logger().info(f'{count}service not available, waiting again...')
+            count+=1
         self.get_logger().info('service available')
         request = RegisterDog.Request()
         request.dog_id = self.name
