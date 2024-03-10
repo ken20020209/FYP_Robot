@@ -16,4 +16,4 @@ print(os.path.dirname(os.path.abspath(__file__)))
 
 
 
-os.system(f"/bin/bash -c 'source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash && ros2 launch basic RobotDogConnector.launch.py name:=dog_s2-1 tpye:=dog_s2'")
+os.system(f"/bin/bash -c 'source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash && ros2 launch basic RobotDogConnector.launch.py name:=dog_s2_1 tpye:=dog_s2'")
