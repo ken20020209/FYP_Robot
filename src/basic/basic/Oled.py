@@ -21,7 +21,7 @@ from .lib.oled_dogzilla import main as oled_main
 class Oled(Node):
     def __init__(self,name='Oled'):
         super().__init__(name)
-        oled_main()
+        oled_main(self.get_namespace())
         
         
 

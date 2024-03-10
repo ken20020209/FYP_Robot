@@ -264,14 +264,14 @@ class Dogzilla_OLED:
                 print("!!!---OLED refresh error---!!!")
             return False
 
-def main():
+def main(name="dog_s2_1"):
     try:
         g_dog = DOGZILLA()
-        g_dog = None
+        # g_dog = None
         oled_clear = False
         oled_debug = False
         state = False
-        name="dog_s2-1"
+        name=name
         if len(sys.argv) > 1:
             if str(sys.argv[1]) == "clear":
                 oled_clear = True

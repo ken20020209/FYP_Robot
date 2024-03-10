@@ -18,6 +18,7 @@ def generate_launch_description():
         ),
         Node(
             package='basic',
+            namespace=LaunchConfiguration('name'),
             executable='Oled',
         ),
         Node(
