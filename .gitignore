@@ -5,6 +5,6 @@ lib/__pycache__/DOGZILLALib.cpython-38.pyc
 build/
 install/
 log/
-
+env.json
 
 frames*
