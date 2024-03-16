@@ -9,6 +9,7 @@ import numpy
 #ros2 lib
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import QoSProfile,ReliabilityPolicy
 from std_msgs.msg import String,Bool
 from sensor_msgs.msg import Image, CompressedImage
 
@@ -19,7 +20,8 @@ class Camera(Node):
         super().__init__(name)
         # self.publisher_ = self.create_publisher(Image, 'camera/raw', 10)
         self.subscriptions_ = self.create_subscription(Bool, 'camera/enable', self.enable_callback, 10)
-        self.publisher_ = self.create_publisher(CompressedImage, 'camera/raw', 10)
+
+        self.publisher_ = self.create_publisher(CompressedImage, 'camera/raw', QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT))
         self.timer = self.create_timer(0.04, self.timer_callback)
         self.i = 0
         self.enable=False
