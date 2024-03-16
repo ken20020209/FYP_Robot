@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# 切換到您的儲存庫目錄
-cd /path/to/your/repo
+# 切換到您的儲存庫目錄 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd $SCRIPT_DIR
 
 # 更新遠端參考
 git fetch
@@ -16,21 +17,8 @@ if [ $LOCAL = $REMOTE ]; then
 else
     echo "分支需要更新。"
     # 如果需要，這裡可以執行 git pull 或其他命令
+    git pull
+    # colcon build 
+    colcon build
+    echo "colcon build 完成"
 fi
-
-# # git pull
-# git pull
-# if [ $? -eq 0 ]; then
-#     echo "git pull successful"
-#     # colcon build --symlink-install
-#     colcon build
-#     if [ $? -eq 0 ]; then
-#         echo "colcon build successful"
-#         # source install/setup.bash
-#         source install/setup.bash
-#     else
-#         echo "colcon build failed"
-#     fi
-# else
-#     echo "git pull failed"
-# fi
