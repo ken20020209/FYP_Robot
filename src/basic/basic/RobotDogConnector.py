@@ -32,6 +32,8 @@ class RobotDogConnector(Node):
         self.g_dogzilla = DOGZILLA()
         self.serverLife=5
 
+        self.g_dogzilla.action(11)
+
         self.declare_parameter('type','dog_s2')
         # self.get_logger().info(self.name)
         #create client
