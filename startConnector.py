@@ -40,10 +40,10 @@ cmd=f"/bin/bash -c"
 cmd+=f" '"
 cmd+=f"source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash"
 if(discovery_server_ip!="127.0.0.1"):
-    # cmd+=f' && export ROS_DISCOVERY_SERVER={discovery_server_ip}:11811'
-    cmd+=f' && export DISCOVERY_SERVER_IP={discovery_server_ip}'
-    cmd+=f' && export DISCOVERY_SERVER_PORT=11811'
-    cmd+=f' && export export FASTRTPS_DEFAULT_PROFILES_FILE={os.path.dirname(os.path.abspath(__file__))}/super_client_configuration_file.xml'
+    cmd+=f' && export ROS_DISCOVERY_SERVER={discovery_server_ip}:11811'
+    # cmd+=f' && export DISCOVERY_SERVER_IP={discovery_server_ip}'
+    # cmd+=f' && export DISCOVERY_SERVER_PORT=11811'
+    # cmd+=f' && export export FASTRTPS_DEFAULT_PROFILES_FILE={os.path.dirname(os.path.abspath(__file__))}/super_client_configuration_file.xml'
 cmd+=f" && ros2 launch basic RobotDogConnector.launch.py name:={name} type:={robot_type} discoverServer:={discovery_server_ip}"
 cmd+=f"'"
 os.system(cmd)
