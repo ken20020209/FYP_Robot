@@ -35,6 +35,8 @@ class RobotDogConnector(Node):
         self.g_dogzilla.action(11)
 
         self.declare_parameter('type','dog_s2')
+        self.declare_parameter('discoverServer','127.0.0.1')
+
         # self.get_logger().info(self.name)
         #create client
         self.registerClient = self.create_client(RegisterDog,'/dog/reg')
@@ -79,6 +81,8 @@ class RobotDogConnector(Node):
         self.get_logger().info(f'start controller romain id: {self.rosDomainId}')
         sp_env=os.environ.copy()
         sp_env['ROS_DOMAIN_ID'] = str(self.rosDomainId)
+        if(self.get_parameter('discoverServer').value != '127.0.0.1'):
+            sp_env['ROS_DISCOVERY_SERVER'] = str(self.get_parameter('discoverServer').value)+f':{11811+self.rosDomainId}'
         self.controller = subprocess.Popen(["ros2","launch","basic","RobotDogController.launch.py"],env=sp_env)
     def stopController(self):
         self.get_logger().info('stop controller')
