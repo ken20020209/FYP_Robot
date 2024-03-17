@@ -34,14 +34,17 @@ def get_ip_address(domain_name):
 os.system(f"sudo systemctl stop yahboom_oled.service")
 os.system(f"sudo systemctl stop YahboomStart.service")
 
-discovery_server_id=get_ip_address(discovery_server)
+discovery_server_ip=get_ip_address(discovery_server)
 print(f"{discovery_server}:{get_ip_address(discovery_server)}")
 cmd=f"/bin/bash -c"
 cmd+=f" '"
 cmd+=f"source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash"
-cmd+=f' && export ROS_DISCOVERY_SERVER={discovery_server_id}:11811' if discovery_server_id!="127.0.0.1" else ""
-cmd+=f" && "
-cmd+=f"ros2 launch basic RobotDogConnector.launch.py name:={name} type:={robot_type} discoverServer:={discovery_server_id}"
+if(discovery_server_ip!="127.0.0.1"):
+    # cmd+=f' && export ROS_DISCOVERY_SERVER={discovery_server_ip}:11811'
+    cmd+=f' && export DISCOVERY_SERVER_IP={discovery_server_ip}'
+    cmd+=f' && export DISCOVERY_SERVER_PORT=11811'
+    cmd+=f' && export export FASTRTPS_DEFAULT_PROFILES_FILE={os.path.dirname(os.path.abspath(__file__))}/super_client_configuration_file.xml'
+cmd+=f" && ros2 launch basic RobotDogConnector.launch.py name:={name} type:={robot_type} discoverServer:={discovery_server_ip}"
 cmd+=f"'"
 os.system(cmd)
 # os.system(f"/bin/bash -c 'source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash && ros2 launch basic RobotDogConnector.launch.py name:={name} tpye:={robot_type} discoverServer:={get_ip_address(discovery_server)}'")
