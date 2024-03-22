@@ -16,6 +16,7 @@ setup(
         ('share/' + package_name, ['package.xml']),
          (os.path.join('share', package_name), glob('launch/*.launch.py')),
          (os.path.join('share', package_name,'urdf'), glob('urdf/*')),
+         (os.path.join('lib/python3.8/site-packages/basic','video'), glob('basic/video/*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,

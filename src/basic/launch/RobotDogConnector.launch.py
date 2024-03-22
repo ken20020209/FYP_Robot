@@ -24,11 +24,6 @@ def generate_launch_description():
         Node(
             package='basic',
             namespace=LaunchConfiguration('name'),
-            executable='Oled',
-        ),
-        Node(
-            package='basic',
-            namespace=LaunchConfiguration('name'),
             executable='RobotDogConnector',
             parameters=[{'type': LaunchConfiguration('type')},
                         {'name': LaunchConfiguration('name')},

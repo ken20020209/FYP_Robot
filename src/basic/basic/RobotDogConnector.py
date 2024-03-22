@@ -17,7 +17,7 @@ from rclpy.node import Node
 from message.srv import RegisterDog,UnregisterDog
 from message.msg import DogStatus
 from std_msgs.msg import Int32
-from .lib.DOGZILLALib import DOGZILLA
+from threading import Thread
 
 class RobotDogConnector(Node):
     
@@ -29,10 +29,8 @@ class RobotDogConnector(Node):
     def __init__(self,name='RobotDogConnector'):
         super().__init__(name)
         self.name=self.get_namespace()
-        self.g_dogzilla = DOGZILLA()
         self.serverLife=5
 
-        self.g_dogzilla.action(11)
 
         self.declare_parameter('type','dog_s2')
         self.declare_parameter('discoverServer','127.0.0.1')
@@ -56,8 +54,13 @@ class RobotDogConnector(Node):
         #create timer
         self.timer = self.create_timer(1, self.statusCallback)
 
-        
 
+        
+    def spOut(self):
+        if self.controller:
+            for line in iter(self.controller.stdout.readline, b''):
+                self.get_logger().info(f'controller: {line.decode("utf-8")}')
+            self.controller.stdout.close()
     def serverStatusCallback(self,msg):
         if msg.data==-1:
             self.serverLife=-1
@@ -69,9 +72,10 @@ class RobotDogConnector(Node):
         msg.status = 1
         self.statusTopic.publish(msg)
 
+        Thread(target=self.spOut).start()
+
         self.serverLife-=1
         if self.serverLife<=0:
-            self.g_dogzilla.reset()
             self.get_logger().info('server dead')
             self.stopController()
             # self.unregisterDog()
@@ -83,7 +87,7 @@ class RobotDogConnector(Node):
         sp_env['ROS_DOMAIN_ID'] = str(self.rosDomainId)
         if(self.get_parameter('discoverServer').value != '127.0.0.1'):
             sp_env['ROS_DISCOVERY_SERVER'] = str(self.get_parameter('discoverServer').value)+f':{11811+self.rosDomainId}'
-        self.controller = subprocess.Popen(["ros2","launch","basic","RobotDogController.launch.py"],env=sp_env)
+        self.controller = subprocess.Popen(["ros2","launch","basic","RobotDogController.launch.py"],env=sp_env,stdout=subprocess.PIPE)
     def stopController(self):
         self.get_logger().info('stop controller')
         if self.controller is not None:

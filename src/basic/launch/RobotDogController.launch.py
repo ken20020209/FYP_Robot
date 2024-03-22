@@ -9,9 +9,7 @@ from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node,PushRosNamespace
 
 def generate_launch_description():
-    bringup_launch_path = PathJoinSubstitution(
-        [FindPackageShare('basic'), 'bringup.launch.py']
-    )
+
 
     namespace=LaunchConfiguration('namespace',default='')
     namespace_declare=DeclareLaunchArgument(
@@ -23,9 +21,6 @@ def generate_launch_description():
 
     group = GroupAction([
         PushRosNamespace(namespace),
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(bringup_launch_path)
-        ),
         Node(
             package='basic',
             executable='Camera'

@@ -27,10 +27,10 @@ class Camera(Node):
         self.enable=False
 
         # get camera device
-        self.cap = cv.VideoCapture(0)
+        # self.cap = cv.VideoCapture(0)
 
         # get video file
-        # self.cap = cv.VideoCapture("./video/file_example_MP4_640_3MG.mp4")
+        self.cap = cv.VideoCapture(f"{os.path.dirname(os.path.abspath(__file__))}/video/file_example_MP4_640_3MG.mp4")
         if not self.cap.isOpened():
             print("Cannot open camera")
             exit()
@@ -48,6 +48,9 @@ class Camera(Node):
         if not self.enable:
             return
         ret, frame = self.cap.read()
+        if not ret:
+            self.cap = cv.VideoCapture(f"{os.path.dirname(os.path.abspath(__file__))}/video/file_example_MP4_640_3MG.mp4")
+            return
 
         # cv.imshow("frame", frame)
         # msg = self.bridge.cv2_to_imgmsg(frame, "bgr8")
