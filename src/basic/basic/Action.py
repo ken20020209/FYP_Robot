@@ -6,7 +6,8 @@ import cv2 as cv
 from cv_bridge import CvBridge
 import numpy
 
-from .lib.DOGZILLALib import DOGZILLA
+# from .lib.DOGZILLALib import DOGZILLA
+from MutoLib import Muto
 
 #ros2 lib
 import rclpy
@@ -21,12 +22,12 @@ class Action(Node):
     def __init__(self,name='Action'):
         super().__init__(name)
         self.subAction= self.create_subscription(Int32,'action',self.action_callback,10)
-        self.dog=DOGZILLA()
+        self.dog=Muto()
         
     def action_callback(self,msg):
         
         if(msg.data<=0 or msg.data>255):
-            print("out of action range 1-18 , 255") 
+            print("out of action range 1-8 , 255") 
         else:
             self.dog.action(msg.data)
 

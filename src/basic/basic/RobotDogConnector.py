@@ -17,7 +17,9 @@ from rclpy.node import Node
 from message.srv import RegisterDog,UnregisterDog
 from message.msg import DogStatus
 from std_msgs.msg import Int32
-from .lib.DOGZILLALib import DOGZILLA
+# from .lib.DOGZILLALib import DOGZILLA
+
+from MutoLib import Muto
 
 class RobotDogConnector(Node):
     
@@ -29,10 +31,10 @@ class RobotDogConnector(Node):
     def __init__(self,name='RobotDogConnector'):
         super().__init__(name)
         self.name=self.get_namespace()
-        self.g_dogzilla = DOGZILLA()
+        self.g_dogzilla = Muto()
         self.serverLife=5
 
-        self.g_dogzilla.action(11)
+        self.g_dogzilla.action(2)
 
         self.declare_parameter('type','dog_s2')
         self.declare_parameter('discoverServer','127.0.0.1')

@@ -19,6 +19,8 @@ else
     # 如果需要，這裡可以執行 git pull 或其他命令
     git pull
     # colcon build 
-    colcon build
-    echo "colcon build 完成"
+    # colcon build
+    # echo "colcon build 完成"
+
+    docker build -t muto_ros2:latest -f docker/Dockerfile .
 fi

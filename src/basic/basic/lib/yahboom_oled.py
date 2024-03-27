@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
-
-
-from MutoLib.MutoLib import Muto
-
 # coding=utf-8
-from curses.ascii import isdigit
 import time
 import os
 import sys
@@ -16,31 +11,26 @@ from PIL import ImageFont
 
 import subprocess
 
-# from DOGZILLALib import DOGZILLA
-
-
-
-
-# V1.0.8
-class Dogzilla_OLED:
-    def __init__(self, dogzilla, i2c_bus=1, clear=False, debug=False,name="dog_s2"):
+# V1.0.6
+class Yahboom_OLED:
+    def __init__(self, i2c_bus="auto", clear=False, debug=False):
         self.__debug = debug
-        self.__i2c_bus = i2c_bus
         self.__clear = clear
+        self.__clear_count = 0
         self.__top = -2
         self.__x = 0
 
-        self.name = name
-
+        self.__BUS_LIST = [1, 0, 7, 8]
+        self.__bus_index = 0
+        if i2c_bus != "auto":
+            self.__i2c_bus = int(i2c_bus)
+            self.__bus_index = 0xFF
+        else:
+            self.__i2c_bus = self.__BUS_LIST[self.__bus_index]
+        
         self.__total_last = 0
         self.__idle_last = 0
         self.__str_CPU = "CPU:0%"
-
-        self.__battery = 0
-        self.__battery_index = 0
-        self.__str_battery = ""
-        self.__offset_battery = 104
-        self.__dog = dogzilla
 
         self.__WIDTH = 128
         self.__HEIGHT = 32
@@ -49,7 +39,6 @@ class Dogzilla_OLED:
         self.__font = ImageFont.load_default()
 
     def __del__(self):
-        self.clear(True)
         if self.__debug:
             print("---OLED-DEL---")
 
@@ -67,7 +56,12 @@ class Dogzilla_OLED:
             return True
         except:
             if self.__debug:
-                print("---OLED no found!---")
+                print("---OLED No Found!---:", self.__BUS_LIST[self.__bus_index])
+            if self.__bus_index == 0xFF:
+                return
+            max_bus = len(self.__BUS_LIST)
+            self.__bus_index = (self.__bus_index + 1) % max_bus
+            self.__i2c_bus = self.__BUS_LIST[self.__bus_index]
             return False
 
     # 清除显示。refresh=True立即刷新，refresh=False不刷新。
@@ -113,7 +107,6 @@ class Dogzilla_OLED:
     def refresh(self):
         self.__oled.image(self.__image)
         self.__oled.display()
-
 
     # 读取CPU占用率
     # Read the CPU usage rate
@@ -200,6 +193,7 @@ class Dogzilla_OLED:
         ip = os.popen(
             "/sbin/ifconfig eth0 | grep 'inet' | awk '{print $2}'").read()
         ip = ip[0: ip.find('\n')]
+        # ip = ''
         if(ip == '' or len(ip) > 15):
             ip = os.popen(
                 "/sbin/ifconfig wlan0 | grep 'inet' | awk '{print $2}'").read()
@@ -210,31 +204,10 @@ class Dogzilla_OLED:
             ip = 'x.x.x.x'
         return ip
 
-    # 设置要显示的电池电量百分比
-    def setBatteryShow(self):
-        if self.__dog == None:
-            return
-        if self.__battery_index == 1:
-            self.__battery = self.__dog.read_battery()
-            # if self.__debug:
-            #     print("Read Battery:", self.__battery)
-            self.__str_battery = "%d%%" % self.__battery
-            if self.__battery <= 0:
-                self.__str_battery = ""
-            elif self.__battery < 10:
-                self.__offset_battery = 116
-            elif self.__battery < 100:
-                self.__offset_battery = 110
-            else:
-                self.__offset_battery = 104
-        self.add_text(self.__offset_battery, 0, self.__str_battery)
-        self.__battery_index = self.__battery_index + 1
-        if self.__battery_index >= 100:
-            self.__battery_index = 0
-
     # oled主要运行函数，在while循环里调用，可实现热插拔功能。
     # Oled mainly runs functions that are called in a while loop and can be hot-pluggable
     def main_program(self):
+        state = False
         try:
             cpu_index = 0
             state = self.begin()
@@ -251,12 +224,8 @@ class Dogzilla_OLED:
                     str_IP = "IPA:" + self.getLocalIP()
                 self.add_text(0, 0, str_CPU)
                 self.add_text(50, 0, str_Time)
-                self.setBatteryShow()
                 self.add_line(str_FreeRAM, 2)
-
-                # self.add_line(str_Disk, 3)
-                self.add_line(f"Name: {self.name}", 3)
-
+                self.add_line(str_Disk, 3)
                 self.add_line(str_IP, 4)
                 # Display image.
                 self.refresh()
@@ -264,43 +233,37 @@ class Dogzilla_OLED:
                 if cpu_index >= 5:
                     cpu_index = 0
                 time.sleep(.1)
+            if self.__clear:
+                self.__clear_count = self.__clear_count + 1
+                if self.__clear_count > len(self.__BUS_LIST):
+                    return True
             return False
         except:
             if self.__debug:
                 print("!!!---OLED refresh error---!!!")
             return False
 
-def main(name="dog_s2_1"):
+
+if __name__ == "__main__":
     try:
-        # g_dog = DOGZILLA()
-        g_dog = Muto()
-        # g_dog = None
         oled_clear = False
         oled_debug = False
         state = False
-        name=name
-        if len(sys.argv) > 1:
-            if str(sys.argv[1]) == "clear":
+        for arg in sys.argv:
+            if str(arg) == "clear":
                 oled_clear = True
-            elif str(sys.argv[1]) == "debug":
+            if str(arg) == "debug":
                 oled_debug = True
-        for i in sys.argv:
-            if i.find("name:=") != -1:
-                name = i.split("name:=")[1]
-                break
-        oled = Dogzilla_OLED(g_dog, clear=oled_clear, debug=oled_debug,name=name)
-
+        oled = Yahboom_OLED(1, clear=oled_clear, debug=oled_debug)
         while True:
             state = oled.main_program()
-            oled.clear(True)
             if state:
                 del oled
                 print("---OLED CLEARED!---")
                 break
             time.sleep(1)
     except KeyboardInterrupt:
+        oled.clear(True)
         del oled
         print("---Program closed!---")
-    
-if __name__ == "__main__":
-    main()
+        pass
