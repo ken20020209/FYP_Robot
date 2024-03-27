@@ -24,7 +24,7 @@ if os.path.exists(f"{os.path.dirname(os.path.abspath(__file__))}/env.json"):
         data = json.load(f)
         name = data["name"]
         robot_type = data["type"]
-    os.system(f"docker run --privileged --rm -e ROBOT_NAME={name} -e ROBOT_TYPE={robot_type} muto_ros2:latest" )
+    os.system(f"docker run --privileged --rm -e ROBOT_NAME={name} -e ROBOT_TYPE={robot_type} --net=host muto_ros2:latest" )
     
 else:
     name=os.environ['ROBOT_NAME']
