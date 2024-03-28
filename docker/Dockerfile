@@ -1,4 +1,4 @@
-FROM osrf/ros:foxy-desktop
+FROM ros:foxy
 
 LABEL maintainer="ken20020209 <ken20020209@gmail.com>"
 
