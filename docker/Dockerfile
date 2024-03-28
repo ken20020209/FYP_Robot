@@ -11,7 +11,8 @@ ADD startConnector.py /fyp
 RUN python3 /fyp/MutoLib/setup.py install && \
     apt-get update && \
     apt-get install -y python3-pip && \ 
-    pip3 install pyserial 
+    pip3 install pyserial && \
+    apt install ros-foxy-cv-bridge
 
 
 WORKDIR /fyp
