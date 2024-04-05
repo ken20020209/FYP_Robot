@@ -20,6 +20,8 @@ class Camera(Node):
         super().__init__(name)
         # self.publisher_ = self.create_publisher(Image, 'camera/raw', 10)
         self.subscriptions_ = self.create_subscription(Bool, 'camera/enable', self.enable_callback, 10)
+        self.publisher_enable = self.create_publisher(Bool, 'camera/enable/current', 10)
+        self.timer_enabel = self.create_timer(1, self.timer_enable_callback)
 
         self.publisher_ = self.create_publisher(CompressedImage, 'camera/raw', QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT))
         self.timer = self.create_timer(0.04, self.timer_callback)
@@ -42,6 +44,11 @@ class Camera(Node):
         self.cap.set(cv.CAP_PROP_FRAME_WIDTH, 640)
         self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, 480)
     
+    def timer_enable_callback(self):
+        msg = Bool()
+        msg.data = self.enable
+        self.publisher_enable.publish(msg)
+
     def enable_callback(self, msg):
         self.enable=msg.data
     def timer_callback(self):
