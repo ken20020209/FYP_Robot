@@ -33,7 +33,7 @@ class Camera(Node):
         # self.cap = cv.VideoCapture(0)
 
         # get video file
-        self.cap = cv.VideoCapture(f"{os.path.dirname(os.path.abspath(__file__))}/video/file_example_MP4_640_3MG.mp4")
+        self.cap = cv.VideoCapture(f"{os.path.dirname(os.path.abspath(__file__))}/video/yoloTest.mp4")
         if not self.cap.isOpened():
             print("Cannot open camera")
             exit()
