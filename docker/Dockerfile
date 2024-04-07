@@ -18,6 +18,7 @@ ENV ROS_DOMAIN_ID=16
 # CMD [ "source","/install/setup.bash" ]
 # CMD [ "ros2","launch","basic","Connector.launch.py" ]
 
+COPY ./startConnectorWithDiscoveryServery.py /fyp
 COPY /docker/entrypoint.sh /
 ENTRYPOINT [ "sh","/entrypoint.sh" ]
 CMD [ "/bin/bash" ]
