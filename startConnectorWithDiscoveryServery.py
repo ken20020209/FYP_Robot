@@ -20,6 +20,7 @@ discovery_server = "discoveryserver.ddns.net"
 name = "dog_s2_0"
 robot_type = "dog_s2"
 
+name=os.getenv('name',name)
 # if os.environ['name']:
 #     name = os.environ['name']
 # with open(f"{os.path.dirname(os.path.abspath(__file__))}/env.json") as f:
