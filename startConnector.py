@@ -35,8 +35,13 @@ def get_ip_address(domain_name):
 os.system(f"sudo systemctl stop yahboom_oled.service")
 os.system(f"sudo systemctl stop YahboomStart.service")
 
-os.system(f"/bin/bash -c 'source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash'")
-sp_oled=Popen(["ros2","launch","basic","Oled.launch.py","name:="+name],env=os.environ)
+def start_oled():
+    cmd = f"/bin/bash -c 'source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash && ros2 launch basic Oled.launch.py name:={name}'"
+    os.system(cmd)
+
+sp_oled = Process(target=start_oled)
+sp_oled.start()
+
 
 discovery_server_ip=get_ip_address(discovery_server)
 print(f"{discovery_server}:{get_ip_address(discovery_server)}")
@@ -50,10 +55,11 @@ if(discovery_server_ip!="127.0.0.1"):
     # cmd+=f' && export export FASTRTPS_DEFAULT_PROFILES_FILE={os.path.dirname(os.path.abspath(__file__))}/super_client_configuration_file.xml'
 cmd+=f" && ros2 launch basic RobotDogConnector.launch.py name:={name} type:={robot_type} discoverServer:={discovery_server_ip}"
 cmd+=f"'"
-while True:
-    os.system(cmd)
-    sleep(5)
+try:
+    while True:
+        os.system(cmd)
+        sleep(5)
 # os.system(f"/bin/bash -c 'source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash && ros2 launch basic RobotDogConnector.launch.py name:={name} tpye:={robot_type} discoverServer:={get_ip_address(discovery_server)}'")
-
-sp_oled.terminate()
-sp_oled.wait()
+finally:
+    sp_oled.terminate()
+    sp_oled.join()
