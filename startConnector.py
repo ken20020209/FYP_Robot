@@ -1,4 +1,5 @@
 import os
+from subprocess import Popen
 from time import sleep
 from threading import Thread
 from multiprocessing import Process,Manager,Value
@@ -34,6 +35,8 @@ def get_ip_address(domain_name):
 os.system(f"sudo systemctl stop yahboom_oled.service")
 os.system(f"sudo systemctl stop YahboomStart.service")
 
+sp_oled=Popen(["ros2","launch","basic","Oled.launch.py","name:="+name])
+
 discovery_server_ip=get_ip_address(discovery_server)
 print(f"{discovery_server}:{get_ip_address(discovery_server)}")
 cmd=f"/bin/bash -c"
@@ -50,3 +53,6 @@ while True:
     os.system(cmd)
     sleep(5)
 # os.system(f"/bin/bash -c 'source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash && ros2 launch basic RobotDogConnector.launch.py name:={name} tpye:={robot_type} discoverServer:={get_ip_address(discovery_server)}'")
+
+sp_oled.terminate()
+sp_oled.wait()

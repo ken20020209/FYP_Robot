@@ -74,8 +74,8 @@ class RobotDogConnector(Node):
             self.g_dogzilla.reset()
             self.get_logger().info('server dead')
             self.stopController()
-            self.destroy_node()
-            rclpy.shutdown()
+            
+            exit()
             # self.unregisterDog()
             # self.registerDog()
     
@@ -114,8 +114,8 @@ class RobotDogConnector(Node):
                 id=future.result().id
                 if id ==-1:
                     self.get_logger().info('registerDog failed')
-                    self.destroy_node()
-                    rclpy.shutdown()
+                    
+                    exit()
                     return
                 self.rosDomainId=id
                 self.get_logger().info('registerDog success')
