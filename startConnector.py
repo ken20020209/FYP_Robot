@@ -35,7 +35,7 @@ def get_ip_address(domain_name):
 os.system(f"sudo systemctl stop yahboom_oled.service")
 os.system(f"sudo systemctl stop YahboomStart.service")
 
-os.system(f"source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash")
+os.system(f"/bin/bash -c 'source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash'")
 sp_oled=Popen(["ros2","launch","basic","Oled.launch.py","name:="+name],env=os.environ)
 
 discovery_server_ip=get_ip_address(discovery_server)
