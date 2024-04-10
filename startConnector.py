@@ -47,7 +47,8 @@ discovery_server_ip=get_ip_address(discovery_server)
 print(f"{discovery_server}:{get_ip_address(discovery_server)}")
 cmd=f"/bin/bash -c"
 cmd+=f" '"
-cmd+=f"source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash"
+cmd+=f" source /opt/ros/foxy/setup.bash"
+cmd+=f" && source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash"
 if(discovery_server_ip!="127.0.0.1"):
     cmd+=f' && export ROS_DISCOVERY_SERVER={discovery_server_ip}:11811'
     # cmd+=f' && export DISCOVERY_SERVER_IP={discovery_server_ip}'
