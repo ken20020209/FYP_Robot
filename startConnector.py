@@ -46,5 +46,7 @@ if(discovery_server_ip!="127.0.0.1"):
     # cmd+=f' && export export FASTRTPS_DEFAULT_PROFILES_FILE={os.path.dirname(os.path.abspath(__file__))}/super_client_configuration_file.xml'
 cmd+=f" && ros2 launch basic RobotDogConnector.launch.py name:={name} type:={robot_type} discoverServer:={discovery_server_ip}"
 cmd+=f"'"
-os.system(cmd)
+while True:
+    os.system(cmd)
+    sleep(5)
 # os.system(f"/bin/bash -c 'source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash && ros2 launch basic RobotDogConnector.launch.py name:={name} tpye:={robot_type} discoverServer:={get_ip_address(discovery_server)}'")
