@@ -78,6 +78,7 @@ class RobotDogConnector(Node):
         if self.serverLife<=0:
             self.get_logger().info('server dead')
             self.stopController()
+            exit()
             # self.unregisterDog()
             self.registerDog()
     
@@ -116,6 +117,7 @@ class RobotDogConnector(Node):
                 id=future.result().id
                 if id ==-1:
                     self.get_logger().info('registerDog failed')
+                    exit()
                     return
                 self.rosDomainId=id
                 self.get_logger().info('registerDog success')

@@ -1,6 +1,8 @@
 nodejs/node_modules
 
 lib/__pycache__/DOGZILLALib.cpython-38.pyc
+*.pyc
+*.pyo
 
 build/
 install/
