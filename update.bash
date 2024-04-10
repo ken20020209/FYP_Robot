@@ -19,7 +19,7 @@ else
     # 如果需要，這裡可以執行 git pull 或其他命令
     git pull
     # remove build and install folder
-    rm -rf build install
+    # rm -rf build install
     # colcon build 
     colcon build
     echo "colcon build 完成"

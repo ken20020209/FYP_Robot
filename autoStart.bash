@@ -11,4 +11,4 @@ cd $SCRIPT_DIR
 # start startConnector python
 #python3 startConnector.py
 
-gnome-terminal -- bash -c "bash update.bash;python3 startConnector.py;exec bash"
+gnome-terminal -- bash -c "bash start.bash;exec bash"
