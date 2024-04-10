@@ -36,7 +36,7 @@ os.system(f"sudo systemctl stop yahboom_oled.service")
 os.system(f"sudo systemctl stop YahboomStart.service")
 
 def start_oled():
-    cmd = f"/bin/bash -c 'source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash && ros2 launch basic Oled.launch.py name:={name}'"
+    cmd = f"/bin/bash -c 'source /opt/ros/foxy/setup.bash && source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash && ros2 launch basic Oled.launch.py name:={name}'"
     os.system(cmd)
 
 sp_oled = Process(target=start_oled)
