@@ -48,7 +48,6 @@ class Camera(Node):
         msg = Bool()
         msg.data = self.enable
         self.publisher_enable.publish(msg)
-
     def enable_callback(self, msg):
         self.enable=msg.data
     def timer_callback(self):

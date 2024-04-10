@@ -16,23 +16,9 @@ def generate_launch_description():
             default_value='RobotDogConnector',
             description='Name of the RobotDogConnector node'
         ),
-        DeclareLaunchArgument(
-            'discoverServer',
-            default_value='127.0.0.1',
-            description='Discover Server'
-        ),
-        # Node(
-        #     package='basic',
-        #     namespace=LaunchConfiguration('name'),
-        #     executable='Oled',
-        # ),
         Node(
             package='basic',
             namespace=LaunchConfiguration('name'),
-            executable='RobotDogConnector',
-            parameters=[{'type': LaunchConfiguration('type')},
-                        {'name': LaunchConfiguration('name')},
-                        {'discoverServer': LaunchConfiguration('discoverServer')}]
-
+            executable='Oled',
         )
     ])

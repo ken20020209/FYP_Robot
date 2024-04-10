@@ -40,9 +40,29 @@ class MinimalSubscriber(Node):
         #set dog motion
         #установить движение собаки 
 
-        self.dogControl.move('x',self.vel_x_*self.rate)
-        self.dogControl.move('y',self.vel_y_*self.rate)
-        self.dogControl.turn(self.angular_z_*self.rate)
+        # self.dogControl.move('x',self.vel_x_*self.rate)
+        # self.dogControl.move('y',self.vel_y_*self.rate)
+        # self.dogControl.turn(self.angular_z_*self.rate)
+        self._logger.info('I heard: "%f"' % self.vel_x_)
+        self._logger.info('I heard: "%f"' % self.vel_y_)
+        self._logger.info('I heard: "%f"' % self.angular_z_)
+        if(self.vel_x_!=0):
+            if(self.vel_x_>0):
+                self.dogControl.forward()
+            else:
+                self.dogControl.back()
+        if(self.vel_y_!=0):
+            if(self.vel_y_>0):
+                self.dogControl.left()
+            else:
+                self.dogControl.right()
+        if(self.angular_z_!=0):
+            if(self.angular_z_>0):
+                self.dogControl.turnleft()
+            else:
+                self.dogControl.turnright()
+            
+
         #end set dog motion
 def main(args=None):
     rclpy.init(args=args)

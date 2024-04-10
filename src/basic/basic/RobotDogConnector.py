@@ -34,7 +34,7 @@ class RobotDogConnector(Node):
         self.g_dogzilla = Muto()
         self.serverLife=5
 
-        self.g_dogzilla.action(2)
+        self.g_dogzilla.action(1)
 
         self.declare_parameter('type','dog_s2')
         self.declare_parameter('discoverServer','127.0.0.1')
@@ -58,6 +58,9 @@ class RobotDogConnector(Node):
         #create timer
         self.timer = self.create_timer(1, self.statusCallback)
 
+        #start oled node
+        self.oled = subprocess.Popen(["ros2","run","basic","Olde","--ros-args","-p","name:="+self.name])
+
         
 
     def serverStatusCallback(self,msg):
@@ -76,8 +79,9 @@ class RobotDogConnector(Node):
             self.g_dogzilla.reset()
             self.get_logger().info('server dead')
             self.stopController()
+            exit()
             # self.unregisterDog()
-            self.registerDog()
+            # self.registerDog()
     
     def startController(self):
         self.get_logger().info(f'start controller romain id: {self.rosDomainId}')
@@ -114,6 +118,7 @@ class RobotDogConnector(Node):
                 id=future.result().id
                 if id ==-1:
                     self.get_logger().info('registerDog failed')
+                    exit()
                     return
                 self.rosDomainId=id
                 self.get_logger().info('registerDog success')

@@ -3,6 +3,8 @@ from time import sleep
 from threading import Thread
 from multiprocessing import Process,Manager,Value
 
+from subprocess import Popen
+
 import socket
 import json
 
@@ -19,13 +21,17 @@ discovery_server = "discoveryserver.ddns.net"
 # get name for env file
 name = "muto_s2_0"
 robot_type = "muto_s2"
+
+sp_oled=Popen(["ros2","launch","basic","Oled.launch.py"])
+
+#for docker
 if os.path.exists(f"{os.path.dirname(os.path.abspath(__file__))}/env.json"):
     with open(f"{os.path.dirname(os.path.abspath(__file__))}/env.json") as f:
         data = json.load(f)
         name = data["name"]
         robot_type = data["type"]
-    os.system(f"docker run --privileged --rm -e ROBOT_NAME={name} -e ROBOT_TYPE={robot_type} --net=host muto_ros2:latest" )
-    
+    os.system(f"docker run -it --rm --net host --device /dev/myserial:/dev/myserial --device /dev/video0:/dev/video0 -e ROBOT_NAME={name} -e ROBOT_TYPE={robot_type}  ken20020209/fyp_robot:muto_s2" )
+# for local
 else:
     name=os.environ['ROBOT_NAME']
     robot_type=os.environ['ROBOT_TYPE']
@@ -52,7 +58,10 @@ else:
         # cmd+=f' && export export FASTRTPS_DEFAULT_PROFILES_FILE={os.path.dirname(os.path.abspath(__file__))}/super_client_configuration_file.xml'
     cmd+=f" && ros2 launch basic RobotDogConnector.launch.py name:={name} type:={robot_type} discoverServer:={discovery_server_ip}"
     cmd+=f"'"
-    os.system(cmd)
+    while True:
+        os.system(cmd)
+        sleep(5)
     # os.system(f"/bin/bash -c 'source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash && ros2 launch basic RobotDogConnector.launch.py name:={name} tpye:={robot_type} discoverServer:={get_ip_address(discovery_server)}'")
     
-
+sp_oled.terminate()
+sp_oled.wait()
