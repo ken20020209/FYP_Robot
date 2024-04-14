@@ -113,6 +113,7 @@ class RobotDogConnector(Node):
             # if future.done():
             if future.result() is not None:
                 self.get_logger().info('result of registerDog domain id: %s' % future.result().id)
+                self.get_logger().info('result of registerDog ip: %s' % future.result().ip)
                 id=future.result().id
                 ip=future.result().ip
                 if id ==-1:
