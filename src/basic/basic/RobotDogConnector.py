@@ -82,12 +82,14 @@ class RobotDogConnector(Node):
             # self.unregisterDog()
             self.registerDog()
     
-    def startController(self):
+    def startController(self,ip):
         self.get_logger().info(f'start controller romain id: {self.rosDomainId}')
         sp_env=os.environ.copy()
         sp_env['ROS_DOMAIN_ID'] = str(self.rosDomainId)
         if(self.get_parameter('discoverServer').value != '127.0.0.1'):
             sp_env['ROS_DISCOVERY_SERVER'] = str(self.get_parameter('discoverServer').value)+f':{11811+self.rosDomainId}'
+        if(ip != ''):
+            sp_env['ROS_IP'] = ip+':'+str(9090+self.rosDomainId)
         self.controller = subprocess.Popen(["ros2","launch","basic","RobotDogController.launch.py"],env=sp_env,stdout=subprocess.PIPE)
     def stopController(self):
         self.get_logger().info('stop controller')
@@ -115,6 +117,7 @@ class RobotDogConnector(Node):
             if future.result() is not None:
                 self.get_logger().info('result of registerDog domain id: %s' % future.result().id)
                 id=future.result().id
+                ip=future.result().ip
                 if id ==-1:
                     self.get_logger().info('registerDog failed')
                     exit()
@@ -123,7 +126,7 @@ class RobotDogConnector(Node):
                 self.get_logger().info('registerDog success')
 
                 # start controller
-                self.startController()
+                self.startController(ip)
             else:
                 self.get_logger().error('exception while calling registerDog service: %r' % future.exception())
         future.add_done_callback(callback)
