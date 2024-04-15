@@ -7,7 +7,7 @@ import socket
 import json
 
 
-discovery_server = "discoveryserver.ddns.net"
+discovery_server = "discovery.ken20020209.com"
 # os.environ['ROS_DOMAIN_ID'] = '16'
 
 # os.system(f"source /home/ken20020209/fyp/FYP_Server/ROS_Server_WS/install/setup.bash")
@@ -43,7 +43,7 @@ if(discovery_server_ip!="127.0.0.1"):
     try:
         import requests
 
-        url = f"http://{discovery_server}.ddns.net:9089/api/ros/ip/load"
+        url = f"http://{discovery_server}:9089/api/ros/ip/load"
 
         payload = {}
         headers = {}
