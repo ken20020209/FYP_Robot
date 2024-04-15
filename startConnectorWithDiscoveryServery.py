@@ -49,7 +49,7 @@ if(discovery_server_ip!="127.0.0.1"):
         headers = {}
 
         response = requests.request("GET", url, headers=headers, data=payload)
-        discovery_server_ip=response.get_json()["ip"]
+        discovery_server_ip=response.json()["ip"]
     except Exception as e:
         print(e)
         print("Failed to get discovery server ip")
