@@ -39,7 +39,22 @@ def get_ip_address(domain_name):
 # os.system(f"sudo systemctl stop YahboomStart.service")
 
 discovery_server_ip=get_ip_address(discovery_server)
-print(f"{discovery_server}:{get_ip_address(discovery_server)}")
+if(discovery_server_ip!="127.0.0.1"):
+    try:
+        import requests
+
+        url = f"http://{discovery_server}.ddns.net:9089/api/ros/ip/load"
+
+        payload = {}
+        headers = {}
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        discovery_server_ip=response.get_json()["ip"]
+    except Exception as e:
+        print(e)
+        print("Failed to get discovery server ip")
+
+print(f"{discovery_server}:{discovery_server_ip}")
 cmd=f"/bin/bash -c"
 cmd+=f" '"
 cmd+=f"source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash"
