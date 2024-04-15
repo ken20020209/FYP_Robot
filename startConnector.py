@@ -8,7 +8,7 @@ import socket
 import json
 
 
-discovery_server = "discoveryserver.ddns.net"
+discovery_server = "discovery.ken20020209.com"
 # os.environ['ROS_DOMAIN_ID'] = '16'
 
 # os.system(f"source /home/ken20020209/fyp/FYP_Server/ROS_Server_WS/install/setup.bash")
@@ -44,7 +44,22 @@ sp_oled.start()
 
 
 discovery_server_ip=get_ip_address(discovery_server)
-print(f"{discovery_server}:{get_ip_address(discovery_server)}")
+if(discovery_server_ip!="127.0.0.1"):
+    try:
+        import requests
+
+        url = f"http://{discovery_server}.ddns.net:9089/api/ros/ip/load"
+
+        payload = {}
+        headers = {}
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+        discovery_server_ip=response.get_json()["ip"]
+    except Exception as e:
+        print(e)
+        print("Failed to get discovery server ip")
+
+print(f"{discovery_server}:{discovery_server_ip}")
 cmd=f"/bin/bash -c"
 cmd+=f" '"
 cmd+=f" source /opt/ros/foxy/setup.bash"
