@@ -11,6 +11,8 @@ RUN . /opt/ros/foxy/setup.sh && \
     rosdep install --from-paths src --ignore-src -r -y && \
     colcon build
 
+RUN apt-get update && apt-get install -y python3-pip && pip3 install requests
+# RUN pip install requests
 
 ENV ROS_DISTRO=foxy
 ENV ROS_DOMAIN_ID=16
