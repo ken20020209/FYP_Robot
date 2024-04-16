@@ -8,7 +8,8 @@ import socket
 import json
 
 
-discovery_server = "discovery.ken20020209.com"
+# discovery_server = "discovery.ken20020209.com"
+discovery_server = "www.ken20020209.com"
 # os.environ['ROS_DOMAIN_ID'] = '16'
 
 # os.system(f"source /home/ken20020209/fyp/FYP_Server/ROS_Server_WS/install/setup.bash")
