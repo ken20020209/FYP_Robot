@@ -31,6 +31,7 @@ setup(
         'Action= basic.Action:main',
         'Oled= basic.Oled:main',
         'Cmd_vel= basic.Cmd_vel:main',
+        'Scan= basic.Scan:main',
         ],
     },
 )

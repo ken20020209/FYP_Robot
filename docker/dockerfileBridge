@@ -1,0 +1,13 @@
+FROM ros:melodic-ros-core
+
+LABEL maintainer="ken20020209 <ken20020209@gmail.com>"
+
+# WORKDIR /fyp/MutoLib
+RUN apt-get update && \
+    apt-get install -y ros-melodic-rosbridge-server
+
+
+ADD ./docker/entrypointBridge.sh /entrypointBridge.sh
+RUN chmod +x /entrypointBridge.sh
+
+ENTRYPOINT ["/entrypointBridge.sh"]

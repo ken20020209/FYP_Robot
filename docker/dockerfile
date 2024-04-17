@@ -4,21 +4,17 @@ LABEL maintainer="ken20020209 <ken20020209@gmail.com>"
 
 # WORKDIR /fyp/MutoLib
 RUN apt-get update && \
-    apt-get install -y python3-pip && \ 
-    pip3 install pyserial && \
-    apt install -y ros-foxy-cv-bridge 
+    apt-get install -y python3-pip
 
 
-RUN pip install pillow && \
-    pip install Adafruit-SSD1306
 
-RUN  pip3 install requests
+RUN  pip3 install roslibpy \
+    requests
+
 WORKDIR /fyp
 
 ADD /src /fyp/src
 
-ADD /MutoLib /fyp/MutoLib
-RUN python3 /fyp/MutoLib/setup.py install
 
 
 

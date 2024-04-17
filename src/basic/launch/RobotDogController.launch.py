@@ -32,12 +32,16 @@ def generate_launch_description():
         ),
         Node(
             package='basic',
-            executable='Camera'
+            executable='Scan'
         ),
-        Node(
-            package='basic',
-            executable='Action'
-        )
+        # Node(
+        #     package='basic',
+        #     executable='Camera'
+        # ),
+        # Node(
+        #     package='basic',
+        #     executable='Action'
+        # )
     ])
 
     ld = LaunchDescription()

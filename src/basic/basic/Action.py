@@ -2,12 +2,9 @@
 import os
 import sys
 import time
-import cv2 as cv
 from cv_bridge import CvBridge
 import numpy
 
-# from .lib.DOGZILLALib import DOGZILLA
-from MutoLib import Muto
 
 #ros2 lib
 import rclpy
@@ -22,7 +19,6 @@ class Action(Node):
     def __init__(self,name='Action'):
         super().__init__(name)
         self.subAction= self.create_subscription(Int32,'action',self.action_callback,10)
-        self.dog=Muto()
         
     def action_callback(self,msg):
         
@@ -32,9 +28,7 @@ class Action(Node):
             self.dog.action(msg.data)
 
         
-        
 
-        
 
 def main():
     rclpy.init()

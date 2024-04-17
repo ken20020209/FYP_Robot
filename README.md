@@ -1,16 +1,19 @@
 # FYP_Robot
 
-build:docker buildx build --platform linux/arm64 -t ken20020209/fyp_robot:muto_s2 -f docker/dockerfile .
+build:docker buildx build --platform linux/arm64 -t ken20020209/fyp_robot:go_1 -f docker/dockerfile .
+build:docker buildx build --platform linux/arm64 -t ken20020209/fyp_robot:go_1_bridge -f docker/dockerfileBridge .
 
-docker push ken20020209/fyp_robot:muto_s2
+docker push ken20020209/fyp_robot:go_1
+docker push ken20020209/fyp_robot:go_1_bridge
 
-
-docker pull ken20020209/fyp_robot:muto_s2
+docker pull ken20020209/fyp_robot:go_1
+docker pull ken20020209/fyp_robot:go_1_bridge
 
 for running
 
-docker run -it --rm --net host --device /dev/myserial:/dev/myserial --device /dev/video0:/dev/video0 -e ROBOT_NAME=muto_s2_1 -e ROBOT_TYPE=muto_s2 ken20020209/fyp_robot:muto_s2
+docker run -d --rm --net host -e ROBOT_NAME=go_1_0 -e ROBOT_TYPE=go_1 ken20020209/fyp_robot:go_1
+docker run -d --rm --net host ken20020209/fyp_robot:go_1_bridge
 
 for debugging
 
-docker run -it --rm --net host --device /dev/myserial:/dev/myserial --device /dev/video0:/dev/video0 -e ROBOT_NAME=muto_s2_1 -e ROBOT_TYPE=muto_s2 --entrypoint /bin/bash ken20020209/fyp_robot:muto_s2
+docker run -it --rm --net host -e ROBOT_NAME=go_1_0 -e ROBOT_TYPE=go_1 --entrypoint /bin/bash ken20020209/fyp_robot:go_1

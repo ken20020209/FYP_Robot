@@ -4,11 +4,10 @@ import os
 import signal
 import sys
 import time
-import cv2 as cv
-from cv_bridge import CvBridge
+
 import subprocess
 import numpy
-
+from geometry_msgs.msg import Twist
 
 
 #ros2 lib
@@ -17,9 +16,8 @@ from rclpy.node import Node
 from message.srv import RegisterDog,UnregisterDog
 from message.msg import DogStatus
 from std_msgs.msg import Int32
-# from .lib.DOGZILLALib import DOGZILLA
 
-from MutoLib import Muto
+
 
 class RobotDogConnector(Node):
     
@@ -31,11 +29,9 @@ class RobotDogConnector(Node):
     def __init__(self,name='RobotDogConnector'):
         super().__init__(name)
         self.name=self.get_namespace()
-        self.g_dogzilla = Muto()
         self.serverLife=5
 
-        self.g_dogzilla.action(1)
-
+        self.cmd_vel_pub = self.create_publisher(Twist, '/cmd_vel', 10)
         self.declare_parameter('type','dog_s2')
         self.declare_parameter('discoverServer','127.0.0.1')
 
@@ -62,7 +58,7 @@ class RobotDogConnector(Node):
         self.oled = subprocess.Popen(["ros2","run","basic","Olde","--ros-args","-p","name:="+self.name])
 
         
-
+    
     def serverStatusCallback(self,msg):
         if msg.data==-1:
             self.serverLife=-1
@@ -76,9 +72,12 @@ class RobotDogConnector(Node):
 
         self.serverLife-=1
         if self.serverLife<=0:
-            self.g_dogzilla.reset()
             self.get_logger().info('server dead')
+
+            self.cmd_vel_pub.publish(Twist())
+
             self.stopController()
+            
             exit()
             # self.unregisterDog()
             # self.registerDog()

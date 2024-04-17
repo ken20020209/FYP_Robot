@@ -19,10 +19,10 @@ discovery_server = "www.ken20020209.com"
 # print(os.path.dirname(os.path.abspath(__file__)))
 
 # get name for env file
-name = "muto_s2_0"
-robot_type = "muto_s2"
+name = "go_1_0"
+robot_type = "go_1"
 
-sp_oled=Popen(["ros2","launch","basic","Oled.launch.py"])
+# sp_oled=Popen(["ros2","launch","basic","Oled.launch.py"])
 
 #for docker
 if os.path.exists(f"{os.path.dirname(os.path.abspath(__file__))}/env.json"):
@@ -30,7 +30,7 @@ if os.path.exists(f"{os.path.dirname(os.path.abspath(__file__))}/env.json"):
         data = json.load(f)
         name = data["name"]
         robot_type = data["type"]
-    os.system(f"docker run -it --rm --net host --device /dev/myserial:/dev/myserial --device /dev/video0:/dev/video0 -e ROBOT_NAME={name} -e ROBOT_TYPE={robot_type}  ken20020209/fyp_robot:muto_s2" )
+    os.system(f"docker run -it --rm --net host -e ROBOT_NAME={name} -e ROBOT_TYPE={robot_type}  ken20020209/fyp_robot:go_1" )
 # for local
 else:
     name=os.environ['ROBOT_NAME']
@@ -43,8 +43,6 @@ else:
             return "127.0.0.1"
 
     # print(get_ip_address(discovery_server))
-    os.system(f"sudo systemctl stop yahboom_oled.service")
-    os.system(f"sudo systemctl stop YahboomStart.service")
 
     discovery_server_ip=get_ip_address(discovery_server)
     if(discovery_server_ip!="127.0.0.1"):
@@ -80,5 +78,6 @@ else:
             sleep(5)
     # os.system(f"/bin/bash -c 'source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash && ros2 launch basic RobotDogConnector.launch.py name:={name} tpye:={robot_type} discoverServer:={get_ip_address(discovery_server)}'")
     finally:
-        sp_oled.terminate()
-        sp_oled.wait()
+        pass
+        # sp_oled.terminate()
+        # sp_oled.wait()
