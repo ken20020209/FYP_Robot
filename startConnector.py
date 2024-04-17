@@ -9,7 +9,7 @@ import socket
 import json
 
 
-discovery_server = "discoveryserver.ddns.net"
+discovery_server = "www.ken20020209.com"
 # os.environ['ROS_DOMAIN_ID'] = '16'
 
 # os.system(f"source /home/ken20020209/fyp/FYP_Server/ROS_Server_WS/install/setup.bash")
@@ -47,7 +47,23 @@ else:
     os.system(f"sudo systemctl stop YahboomStart.service")
 
     discovery_server_ip=get_ip_address(discovery_server)
-    print(f"{discovery_server}:{get_ip_address(discovery_server)}")
+    if(discovery_server_ip!="127.0.0.1"):
+        try:
+            import requests
+
+            url = f"http://{discovery_server}:9089/api/ros/ip/load"
+
+            payload = {}
+            headers = {}
+
+            response = requests.request("GET", url, headers=headers, data=payload,timeout=5)
+            discovery_server_ip=response.json()["ip"]
+        except Exception as e:
+            print(e)
+            print("Failed to get discovery server ip")
+
+    print(f"{discovery_server}:{discovery_server_ip}")
+
     cmd=f"/bin/bash -c"
     cmd+=f" '"
     cmd+=f"source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash"
@@ -58,10 +74,11 @@ else:
         # cmd+=f' && export export FASTRTPS_DEFAULT_PROFILES_FILE={os.path.dirname(os.path.abspath(__file__))}/super_client_configuration_file.xml'
     cmd+=f" && ros2 launch basic RobotDogConnector.launch.py name:={name} type:={robot_type} discoverServer:={discovery_server_ip}"
     cmd+=f"'"
-    while True:
-        os.system(cmd)
-        sleep(5)
+    try:
+        while True:
+            os.system(cmd)
+            sleep(5)
     # os.system(f"/bin/bash -c 'source {os.path.dirname(os.path.abspath(__file__))}/install/setup.bash && ros2 launch basic RobotDogConnector.launch.py name:={name} tpye:={robot_type} discoverServer:={get_ip_address(discovery_server)}'")
-    
-sp_oled.terminate()
-sp_oled.wait()
+    finally:
+        sp_oled.terminate()
+        sp_oled.wait()

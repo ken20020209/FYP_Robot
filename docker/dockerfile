@@ -11,12 +11,15 @@ RUN apt-get update && \
 
 RUN pip install pillow && \
     pip install Adafruit-SSD1306
+
+RUN  pip3 install requests
 WORKDIR /fyp
 
 ADD /src /fyp/src
 
 ADD /MutoLib /fyp/MutoLib
 RUN python3 /fyp/MutoLib/setup.py install
+
 
 
 ADD startConnector.py /fyp
