@@ -40,8 +40,22 @@ class MinimalSubscriber(Node):
         scan.scan_time=msg['scan_time']
         scan.range_min=msg['range_min']
         scan.range_max=msg['range_max']
-        scan.ranges=msg['ranges']
-        scan.intensities=msg['intensities']
+
+        rangeFloat32Array=[]
+        for i in range(len(msg['ranges'])):
+            if msg['ranges'][i]==None:
+                rangeFloat32Array.append(float('inf'))
+            else:
+                rangeFloat32Array.append(float(msg['ranges'][i]))
+        scan.ranges=rangeFloat32Array
+
+        intensityFloat32Array=[]
+        for i in range(len(msg['intensities'])):
+            if msg['intensities'][i]==None:
+                intensityFloat32Array.append(float('inf'))
+            else:
+                intensityFloat32Array.append(float(msg['intensities'][i]))
+        scan.intensities=intensityFloat32Array
 
 
         self.scan_pub.publish(scan)

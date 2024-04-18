@@ -8,7 +8,7 @@ import time
 import subprocess
 import numpy
 from geometry_msgs.msg import Twist
-
+import roslibpy
 
 #ros2 lib
 import rclpy
@@ -16,6 +16,7 @@ from rclpy.node import Node
 from message.srv import RegisterDog,UnregisterDog
 from message.msg import DogStatus
 from std_msgs.msg import Int32
+
 
 
 
@@ -31,7 +32,10 @@ class RobotDogConnector(Node):
         self.name=self.get_namespace()
         self.serverLife=5
 
-        self.cmd_vel_pub = self.create_publisher(Twist, '/cmd_vel', 10)
+        self.ros=roslibpy.Ros(host='localhost',port=9090)
+        self.cmd_vel_topic = roslibpy.Topic(self.ros,'cmd_vel','geometry_msgs/Twist')
+        self.ros.run()
+        
         self.declare_parameter('type','dog_s2')
         self.declare_parameter('discoverServer','127.0.0.1')
 
@@ -74,8 +78,22 @@ class RobotDogConnector(Node):
         if self.serverLife<=0:
             self.get_logger().info('server dead')
 
-            self.cmd_vel_pub.publish(Twist())
+            # publish to rosbridge
+            data={
+                'linear':{
+                    'x':0,
+                    'y':0,
+                    'z':0
+                },
+                'angular':{
+                    'x':0,
+                    'y':0,
+                    'z':0
+                }
+            }
 
+            message=roslibpy.Message(data)
+            self.cmd_vel_topic.publish(message)
             self.stopController()
             
             exit()
