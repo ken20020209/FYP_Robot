@@ -19,6 +19,7 @@ from message.msg import DogStatus
 from std_msgs.msg import Int32
 from .lib.DOGZILLALib import DOGZILLA
 
+ServerLife=15
 class RobotDogConnector(Node):
     
     name:str 
@@ -30,7 +31,7 @@ class RobotDogConnector(Node):
         super().__init__(name)
         self.name=self.get_namespace()
         self.g_dogzilla = DOGZILLA()
-        self.serverLife=5
+        self.serverLife=ServerLife
 
         self.g_dogzilla.action(11)
 
@@ -62,7 +63,7 @@ class RobotDogConnector(Node):
         if msg.data==-1:
             self.serverLife=-1
             return
-        self.serverLife=5
+        self.serverLife=ServerLife
     def statusCallback(self):
         msg = DogStatus()
         msg.battery = 100
@@ -95,7 +96,7 @@ class RobotDogConnector(Node):
             self.controller = None
 
     def registerDog(self):
-        self.serverLife=5
+        self.serverLife=ServerLife
         # self.get_logger().info('waiting for service')
         count = 0
         while not self.registerClient.wait_for_service(timeout_sec=1.0):
